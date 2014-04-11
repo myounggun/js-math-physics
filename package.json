@@ -1,0 +1,27 @@
+{
+  "name": "js-math-physics",
+  "version": "0.0.1",
+  "description": "basic math and physics study",
+  "main": "web.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node web.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/myounggun/js-math-physics.git"
+  },
+  "keywords": [
+    "math",
+    "heroku"
+  ],
+  "author": "myounggun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/myounggun/js-math-physics/issues"
+  },
+  "homepage": "https://github.com/myounggun/js-math-physics",
+  "dependencies": {
+    "express": "~4.0.0"
+  }
+}
