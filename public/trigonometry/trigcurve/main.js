@@ -6,7 +6,7 @@ window.onload = function() {
 		D2R = Math.PI / 180,
 		size = 100; // 진폭 
 
-	context.translate(0, height / 2);
+	context.translate(width / 2 - size * Math.PI, height / 2);
 	context.scale(1, -1); // 데카르트 좌표계 -> 화면 좌표계
 
 	drawSinCurve("#ff0000"); // RED
