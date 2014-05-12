@@ -11,7 +11,7 @@ var Maths = {
     },
 
     map: function(value, sourceMin, sourceMax, destMin, destMax) {
-        return utils.lerp(Maths.norm(value, sourceMin, sourceMax), destMin, destMax);
+        return Maths.lerp(Maths.norm(value, sourceMin, sourceMax), destMin, destMax);
     },
 
     clamp: function(value, min, max) {
@@ -37,5 +37,23 @@ var Maths = {
 
     roundNearest: function(value, nearest) {
         return Math.round(value / nearest) * nearest;
+    },
+    
+    randomRange: function(min, max) {
+        return min + Math.random() * (max - min);
+    },
+    
+    randomInt: function(min, max) {
+        return Math.floor(min + Math.random() * (max - min + 1));
+    },
+    
+    randomDist: function(min, max, iterations) {
+        var total = 0;
+        
+        for (var i = 0; i < iterations; i++) {
+            total += Maths.randomRange(min, max);
+        }
+        
+        return total / iterations;
     }
 }
