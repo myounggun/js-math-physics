@@ -3,34 +3,28 @@ window.onload = function() {
         context = canvas.getContext("2d"),
         width = canvas.width = window.innerWidth,
         height = canvas.height = window.innerHeight,
-        ballRadius = 20,
-        ballPoint = {x: ballRadius, y: ballRadius},
-        vx = 3;
-        vy = 0,  // 초속도 
-        g = 0.5; // 중력
+        sun = particle.create(width / 2, height / 2, 0, 0),
+        planet =  particle.create(width / 2 + 200, height / 2, 10, -Math.PI / 2);
 
+    sun.mass = 20000; // 40000, 70000, 100000
+    
     update();
 
     function update() {
         context.clearRect(0, 0, width, height);
 
-        vy += g;
-        ballPoint.x += vx;
-        ballPoint.y += vy;
-
-        if (ballPoint.y + ballRadius / 2 >= height) {
-            vy = -vy - g;
-        }
-
-        drawCircle(ballPoint, ballRadius, "rgba(234, 0, 94, 1)");
-        drawCircle(ballPoint, 2, "rgba(255, 255, 255, 1)"); // ball center
+        planet.gravitateTo(sun);
+        planet.update();
+        
+        drawCircle(sun.position, 20, "#EA005E");
+        drawCircle(planet.position, 5, "#0C88E8");
 
         requestAnimationFrame(update);
     }
-
+    
     function drawCircle(p, radius, color) {
         context.beginPath();
-        context.arc(p.x, p.y, radius, 0, Math.PI * 2, false);
+        context.arc(p.getX(), p.getY(), radius, 0, Math.PI * 2, false);
         context.fillStyle = color;
         context.fill();
         context.closePath();
