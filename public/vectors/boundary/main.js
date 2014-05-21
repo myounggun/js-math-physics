@@ -37,7 +37,7 @@ window.onload = function() {
                 p.velocity.setAngle(-Math.PI / 2 + (Math.random() * 0.2 - 0.1));
             }
             
-            // left,right, top bouncing
+            // left, right, top bouncing
             if (p.position.getX() + p.radius > width) {
                 p.position.setX(width - p.radius);
                 p.velocity.setX(p.velocity.getX() * p.bounce);
