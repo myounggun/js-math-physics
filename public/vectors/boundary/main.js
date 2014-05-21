@@ -12,8 +12,8 @@ window.onload = function() {
     for (var i = 0; i < particleCount; i++) {
         var p = particle.create(width / 2, height, Math.random() * 20 + 5, -Math.PI / 2 + (Math.random() * 0.2 - 0.1), 0.1);
         p.radius = Math.random() * 10 + 2;
-        p.bounce = -0.9;
-        p.alpha = Math.random() * 0.6 + 0.1;
+        p.bounce = -0.1;
+        p.alpha = Maths.map(p.radius, 2, 12, 0.7, 0.1);
         particles.push(p);
     }
     
