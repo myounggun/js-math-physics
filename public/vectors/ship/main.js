@@ -9,6 +9,8 @@ window.onload = function() {
         angle = 0,
         turningLeft = false,
         turningRight = false;
+    
+    ship.friction = 0.98;
 
     update();
 
