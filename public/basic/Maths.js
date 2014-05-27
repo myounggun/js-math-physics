@@ -15,7 +15,9 @@ var Maths = {
     },
 
     clamp: function(value, min, max) {
-        return Math.min(Math.max(value, Math.min(min, max)), Math.max(min, max));
+        min = Math.min(min, max);
+        max = Math.max(min, max);
+        return Math.min(Math.max(value, min), max);
     },
 
     distance: function(p0, p1) {
@@ -48,12 +50,42 @@ var Maths = {
     },
     
     randomDist: function(min, max, iterations) {
-        var total = 0;
-        
-        for (var i = 0; i < iterations; i++) {
+        for (var i = 0, total = 0; i < iterations; i++) {
             total += Maths.randomRange(min, max);
         }
         
         return total / iterations;
+    },
+    
+    circleCollision: function(c0, c1) {
+        return Maths.distance(c0, c1) < c0.radius + c1.radius;
+    },
+    
+    circlePointCollision: function(x, y, circle) {
+        return Maths.distanceXY(x, y, circle.x, circle.y) < circle.radius;
+    },
+    
+    pointInRect: function(x, y, rect) {
+        return Maths.inRange(x, rect.x, rect.x + rect.width) &&
+               Maths.inRange(y, rect.y, rect.y + rect.height); 
+    },
+    
+    inRange: function(value, min, max) {
+        min = Math.min(min, max);
+        max = Math.max(min, max);
+        return value >= min && value <= max;
+    },
+    
+    rangeIntersect: function(min0, max0, min1, max1) {
+        min0 = Math.min(min0, max0);
+        max0 = Math.max(min0, max0);
+        min1 = Math.min(min1, max1);
+        max1 = Math.max(min1, max1);
+        return max0 >= min1 && min0 <= max1;
+    },
+    
+    rectIntersect: function(r0, r1) {
+        return Maths.rangeIntersect(r0.x, r0.x + r0.width, r1.x, r1.x + r1.width) &&
+               Maths.rangeIntersect(r0.y, r0.y + r0.height, r1.y, r1.y + r1.height);
     }
 }
