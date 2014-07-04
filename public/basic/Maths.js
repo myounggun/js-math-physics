@@ -36,6 +36,12 @@ var Maths = {
         var mult = Math.pow(10, places);
         return Math.round(value * mult) / mult;
     },
+    
+    // shift: 16 === Math.floor
+    roundToShift: function(value, shift) {
+        var mult = 1 << shift;
+        return Math.round(value * mult) >> shift; 
+    },
 
     roundNearest: function(value, nearest) {
         return Math.round(value / nearest) * nearest;
