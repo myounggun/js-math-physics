@@ -3,9 +3,9 @@ window.onload = function() {
         context = canvas.getContext("2d"),
         width = canvas.width = window.innerWidth,
         height = canvas.height = window.innerHeight,
-        ballRadius = 20,
+        ballRadius = 50,
         ballPoint = {x: ballRadius, y: ballRadius},
-        vx = 3;
+        vx = 10;
         vy = 0,  // 초속도 
         g = 0.5; // 중력
 
@@ -20,6 +20,16 @@ window.onload = function() {
 
         if (ballPoint.y + ballRadius / 2 >= height) {
             vy = -vy - g;
+        }
+        
+        // 좌우 경계면 체크
+        if (ballPoint.x + ballRadius > width) {
+            ballPoint.x = width - ballRadius;
+            vx *= -1;
+        }
+        if (ballPoint.x - ballRadius < 0) {
+            ballPoint.x = ballRadius;
+            vx *= -1;
         }
 
         drawCircle(ballPoint, ballRadius, "rgba(234, 0, 94, 1)");
