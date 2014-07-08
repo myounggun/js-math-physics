@@ -5,7 +5,7 @@ window.onload = function() {
         height = canvas.height = window.innerHeight,
         ballRadius = 50,
         ballPoint = {x: ballRadius, y: ballRadius},
-        vx = 10;
+        vx = 10,
         vy = 0,  // 초속도 
         g = 0.5; // 중력
 
@@ -13,7 +13,7 @@ window.onload = function() {
 
     function update() {
         context.clearRect(0, 0, width, height);
-
+        
         vy += g;
         ballPoint.x += vx;
         ballPoint.y += vy;
