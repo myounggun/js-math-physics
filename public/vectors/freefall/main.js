@@ -25,11 +25,11 @@ window.onload = function() {
         // 좌우 경계면 체크
         if (ballPoint.x + ballRadius > width) {
             ballPoint.x = width - ballRadius;
-            vx *= -1;
+            vx = -vx;
         }
         if (ballPoint.x - ballRadius < 0) {
             ballPoint.x = ballRadius;
-            vx *= -1;
+            vx = -vx;
         }
 
         drawCircle(ballPoint, ballRadius, "rgba(234, 0, 94, 1)");
