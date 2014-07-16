@@ -6,7 +6,7 @@ window.onload = function() {
         ballRadius = 50,
         ballPoint = {x: ballRadius, y: ballRadius},
         vx = 10,
-        vy = 0,  // 초속도 
+        vy = 0,  // 초속도
         g = 0.5; // 중력
 
     update();
@@ -18,7 +18,7 @@ window.onload = function() {
         ballPoint.x += vx;
         ballPoint.y += vy;
 
-        if (ballPoint.y + ballRadius / 2 >= height) {
+        if (ballPoint.y + ballRadius >= height) {
             vy = -vy - g;
         }
         
