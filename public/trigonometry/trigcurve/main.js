@@ -43,6 +43,8 @@ window.onload = function() {
         for (var angle = 0; angle < Math.PI * 2; angle += 0.01) {
             var x = angle * size,
                 y = Math.tan(angle) * size;
+            
+            console.log('a=', angle * (Math.PI * 180), ' t=', Math.tan(angle));
 
             context.fillStyle = color;
             context.fillRect(x, y, 3, 3);

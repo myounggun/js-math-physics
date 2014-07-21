@@ -10,31 +10,19 @@ window.onload = function() {
     drawGrid();
     drawXYAxis();
     
+    var m = new mg.geom.Matrix2D(1, 0, 0, 1, 50, 50);
+    console.log(m.toString());
+    //matrix2D = matrix2D.concat(new mg.geom.Matrix2D(1, 0, 0, 1, 100, 100));
+   // m = m.translate(100, 100);
+    m = m.scale(2, 2);
+    m = m.rotate(Math.PI / 4);
+    console.log(m.toString());
+    
     context.fillStyle = "#ff0000";
-    
-    var A = 45 * Math.PI / 180;
-    var cosA = Math.cos(A);
-    var sinA = Math.sin(A);
-    var tanA = Math.tan(A);
-  
-    //rotate
-    /**
-     * | a  b   0  |
-     * | c  d   0  |
-     * | tx ty  1  |
-     */
-    //context.transform(cosA, -sinA, sinA, cosA, 100, 100);
-    
-    /**
-     * | a  c tx  |
-     * | b  d ty  |
-     * | 0  0  1  |
-     */
-    context.transform(cosA, sinA, -sinA, cosA, 100, 100);
-  
-    //skew
-    //context.transform(1, 0, tanA, 1, 100, 100);
-    
+    //context.translate(100, 100);
+    //context.rotate(45 * Math.PI / 180);
+    //context.scale(0.5, 0.5);
+    context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
     context.fillRect(0, 0, 100, 100);
 
     function drawGrid() {
