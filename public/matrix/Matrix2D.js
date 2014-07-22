@@ -1,5 +1,7 @@
 /**
- * Matrix2D.js v1.0.0 by myounggun@gmail.com
+ * Mental Graphics by myounggun@gmail.com
+ * 
+ * Matrix2D.js 
  * 
  * | a  c tx |
  * | b  d ty |
