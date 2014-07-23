@@ -4,67 +4,72 @@ window.onload = function() {
         width = canvas.width = window.innerWidth,
         height = canvas.height = window.innerHeight,
         focalLength = 300, // 초점 거리
-        cards = [],
-        numCards = 8,
-        centerZ = 1000,
+        points = [],
+        numPoints = 200,
+        centerZ = 2000,
         radius = 1000,
         baseAngle = 0,
         rotationSpeed = 0.01;
     
-    for (var i = 0; i < numCards; i++) {
-        var card = {
-            y: 0,
-            angle: Math.PI * 2 / numCards * i,
+    for (var i = 0; i < numPoints; i++) {
+        var point = {
+            angle: 0.2 * i,
+            y: 2000 - 4000 / numPoints * i + Math.random() * 500
         };
         
-        card.x = Math.cos(card.angle + baseAngle) * radius;
-        card.z = centerZ + Math.sin(card.angle + baseAngle) * radius;
+        console.log('@point angle=', point.angle, 'y=', point.y);
         
-        cards.push(card);
+        point.x = Math.cos(point.angle + baseAngle) * radius;
+        point.z = centerZ + Math.sin(point.angle + baseAngle) * radius;
+        
+        points.push(point);
     }
     
     context.translate(width / 2, height / 2);
     
     document.body.addEventListener("mousemove", function(event){
         rotationSpeed = (event.clientX - width / 2) * 0.00005;
-        console.log('clientX=', event.clientX,'halfWidth=', width / 2);
-        console.log('factor=', (event.clientX - width / 2));
+//        console.log('clientX=', event.clientX,'halfWidth=', width / 2);
+//        console.log('factor=', (event.clientX - width / 2));
     });
     
     update();
 
     function update() {
         baseAngle += rotationSpeed;
-        cards.sort(function (a, b) {return b.z - a.z});
+//        points.sort(function (a, b) {return b.z - a.z});
         
         context.clearRect(-width / 2, -height / 2, width, height);
         
         drawXYAxis();
         
-        for (var i = 0; i < numCards; i++) {
-            var card = cards[i],
-                perspective = focalLength / (focalLength + card.z);
+        context.beginPath();
+        for (var i = 0; i < numPoints; i++) {
+            var point = points[i],
+                perspective = focalLength / (focalLength + point.z);
             
             context.save();
-
-            context.beginPath();
             context.scale(perspective, perspective);
-            context.translate(card.x, card.y);
+            context.translate(point.x, point.y);
             
-            var color = Math.floor(Maths.map(card.z, 0, centerZ, 0, 80));
-            
-            context.fillStyle = "rgba("+color+","+color+","+color+", 1)";
-            context.fillRect(-100, -100, 200, 200);
-            context.fill();
-            context.closePath();
+            if (i == 0) {
+                context.moveTo(0, 0);
+            } else {
+                context.lineTo(0, 0);
+            }
 
-            context.translate(-100, -100);
+//            context.beginPath();
+//            context.arc(0, 0, 5, 0, Math.PI * 2, false);
+//            context.fill();
+//            context.closePath();
             
             context.restore();
             
-            card.x = Math.cos(card.angle + baseAngle) * radius;
-            card.z = centerZ + Math.sin(card.angle + baseAngle) * radius;
+            point.x = Math.cos(point.angle + baseAngle) * radius;
+            point.z = centerZ + Math.sin(point.angle + baseAngle) * radius;
         }
+        
+        context.stroke();
 
         requestAnimationFrame(update);
     }
