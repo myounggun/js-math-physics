@@ -6,20 +6,24 @@ window.onload = function() {
         gridSize = 50,
         fl = 300,
         points = [],
-        needUpdate = true,
+        changed = true,
         centerZ = 1500;
-
     
     context.translate(width / 2, height / 2);
     
-    points[0] = {x: -500, y: -500, z:  500};
-    points[1] = {x:  500, y: -500, z:  500}; 
-    points[2] = {x:  500, y: -500, z: -500}; 
-    points[3] = {x: -500, y: -500, z: -500};
-    points[4] = {x: -500, y:  500, z:  500};
-    points[5] = {x:  500, y:  500, z:  500}; 
-    points[6] = {x:  500, y:  500, z: -500}; 
-    points[7] = {x: -500, y:  500, z: -500};
+    var m = new mg.geom.Matrix3D();
+    console.log(m);
+    
+    // plane
+    points[0] = {x: -500, y: -500, z: 500};
+    points[1] = {x:  500, y: -500, z: 500}; 
+    points[2] = {x: -500, y:  500, z: 500}; 
+    points[3] = {x:  500, y:  500, z: 500};
+    
+    for (var i = 0; i < points.length; i++) {
+        var p = points[i];
+        p.m = m.translate(p.x, p.y, p.z);
+    }
 
     function project() {
         for (var i = 0; i < points.length; i++) {
@@ -44,15 +48,18 @@ window.onload = function() {
     function translateModel(x, y, z) {
         for (var i = 0; i < points.length; i++) {
             var p = points[i];
-            p.x += x;
-            p.y += y;
-            p.z += z;
+            
+            p.m = p.m.translate(x, y, z);
+            p.x = p.m.m03;
+            p.y = p.m.m13;
+            p.z = p.m.m23;
         }
         
-        needUpdate = true;
+        changed = true;
     }
     
     function rotateX(angle) {
+        console.log("r");
         var cosA = Math.cos(angle),
             sinA = Math.sin(angle);
         
@@ -61,11 +68,18 @@ window.onload = function() {
                 y1 = p.y * cosA - p.z * sinA,
                 z1 = p.y * sinA + p.z * cosA;
             
-            p.y = y1;
-            p.z = z1;   
+            p.m = p.m.rotateX(angle);
+            p.x = p.m.m03;
+            p.y = p.m.m13;
+            p.z = p.m.m23;
+            
+//            p.y = y1;
+            
+            console.log(p.m);
+//            p.z = z1;   
         }
         
-        needUpdate = true;
+        changed = true;
     }
     
     function rotateY(angle) {
@@ -81,7 +95,7 @@ window.onload = function() {
             p.z = z1;   
         }
         
-        needUpdate = true;
+        changed = true;
     }
     
     function rotateZ(angle) {
@@ -97,7 +111,7 @@ window.onload = function() {
             p.y = y1;   
         }
         
-        needUpdate = true;
+        changed = true;
     }
     
     // 3d model translate & rotation
@@ -139,16 +153,14 @@ window.onload = function() {
                 break;
             case 83: // S : down
                 rotateX(-0.05);
-                break;                
-           
+                break;
         }
     });
     
     update();
 
     function update() {
-        
-        if (needUpdate) {
+        if (changed) {
             context.clearRect(-width / 2, -height / 2, width, height);
     
             drawGrid();
@@ -159,20 +171,14 @@ window.onload = function() {
             context.save();
             context.beginPath();
             
-            drawVertexLine(0, 1, 2, 3, 0);
-            drawVertexLine(4, 5, 6, 7, 4);
-            drawVertexLine(0, 4);
-            drawVertexLine(1, 5);
-            drawVertexLine(2, 6);
-            drawVertexLine(3, 7);
+            drawVertexLine(0, 1, 2, 0);
+            drawVertexLine(1, 3, 2, 1);
             context.strokeStyle = "#000000";
             context.stroke();
             context.closePath();
             context.restore();
             
-            console.log('update');
-            
-            needUpdate = false;
+            changed = false;
         }
         
         requestAnimationFrame(update);
