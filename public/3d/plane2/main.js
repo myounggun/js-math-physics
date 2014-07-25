@@ -4,36 +4,19 @@ window.onload = function() {
         width = canvas.width = 800,//window.innerWidth,
         height = canvas.height = 600,//window.innerHeight,
         gridSize = 50,
-        fl = 300,
+        focalLength = 300,
         points = [],
         changed = true,
-        centerZ = 1500;
+        centerZ = 1500,
+        m = new mg.geom.Matrix3D();
     
     context.translate(width / 2, height / 2);
-    
-    var m = new mg.geom.Matrix3D();
-    console.log(m);
     
     // plane
     points[0] = {x: -500, y: -500, z: 500};
     points[1] = {x:  500, y: -500, z: 500}; 
     points[2] = {x: -500, y:  500, z: 500}; 
     points[3] = {x:  500, y:  500, z: 500};
-    
-    for (var i = 0; i < points.length; i++) {
-        var p = points[i];
-        p.m = m.translate(p.x, p.y, p.z);
-    }
-
-    function project() {
-        for (var i = 0; i < points.length; i++) {
-            var p = points[i],
-                scale = fl / (fl + p.z + centerZ);
-            
-            p.sx = p.x * scale;
-            p.sy = p.y * scale;
-        }
-    }
     
     function drawVertexLine() {
         var p = points[arguments[0]];
@@ -48,73 +31,55 @@ window.onload = function() {
     function translateModel(x, y, z) {
         for (var i = 0; i < points.length; i++) {
             var p = points[i];
-            
-            p.m = p.m.translate(x, y, z);
-            p.x = p.m.m03;
-            p.y = p.m.m13;
-            p.z = p.m.m23;
+            p.x += x;
+            p.y += y;
+            p.z += z;
         }
         
         changed = true;
     }
     
     function rotateX(angle) {
-        console.log("r");
-        var cosA = Math.cos(angle),
-            sinA = Math.sin(angle);
-        
-        for (var i = 0; i < points.length; i++) {
-            var p = points[i],
-                y1 = p.y * cosA - p.z * sinA,
-                z1 = p.y * sinA + p.z * cosA;
-            
-            p.m = p.m.rotateX(angle);
-            p.x = p.m.m03;
-            p.y = p.m.m13;
-            p.z = p.m.m23;
-            
-//            p.y = y1;
-            
-            console.log(p.m);
-//            p.z = z1;   
-        }
+        m = m.rotateX(angle);
         
         changed = true;
     }
     
     function rotateY(angle) {
-        var cosA = Math.cos(angle),
-            sinA = Math.sin(angle);
-        
-        for (var i = 0; i < points.length; i++) {
-            var p = points[i],
-                x1 = p.x * cosA - p.z * sinA,
-                z1 = p.x * sinA + p.z * cosA;
-            
-            p.x = x1;
-            p.z = z1;   
-        }
+        m = m.rotateY(angle);
         
         changed = true;
     }
     
     function rotateZ(angle) {
-        var cosA = Math.cos(angle),
-            sinA = Math.sin(angle);
-        
-        for (var i = 0; i < points.length; i++) {
-            var p = points[i],
-                x1 = p.x * cosA - p.y * sinA,
-                y1 = p.x * sinA + p.y * cosA;
-            
-            p.x = x1;
-            p.y = y1;   
-        }
+        m = m.rotateZ(angle);
         
         changed = true;
     }
     
-    // 3d model translate & rotation
+    function getTransformVertices() {
+        var vertices = [];
+        for (var i = 0; i < points.length; i++) {
+            var p = points[i],
+                vertex = m.transform(p);
+            
+            vertices.push(vertex);
+        }
+        
+        return vertices;
+    }
+    
+    function perspectiveProject(vertices) {
+        for (var i = 0; i < vertices.length; i++) {
+            var v = vertices[i],
+                p = points[i],
+                scale = focalLength / (focalLength + v.z + centerZ);
+            
+            p.sx = v.x * scale;
+            p.sy = v.y * scale;
+        }
+    }
+    
     document.body.addEventListener("keydown", function(event) {
         console.log(event.keyCode);
         switch(event.keyCode) {
@@ -165,8 +130,8 @@ window.onload = function() {
     
             drawGrid();
             drawXYAxis();
-            
-            project();
+ 
+            perspectiveProject(getTransformVertices());
             
             context.save();
             context.beginPath();
@@ -183,7 +148,6 @@ window.onload = function() {
         
         requestAnimationFrame(update);
     }
-    
     
     function drawGrid() {
         context.beginPath();

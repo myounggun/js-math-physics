@@ -63,6 +63,18 @@ NS.Matrix2D.prototype = {
         return this.concat(new NS.Matrix2D(1, rx, ry, 1, 0, 0));
     },
     
+    /**
+     * | a  c tx |   | x |
+     * | b  d ty | * | y |
+     * | 0  0  1 |   | 1 |
+     */
+    transform: function(p) {
+        return {
+            x: this.a * p.x + this.c * p.y + this.tx * p.z,
+            y: this.b * p.x + this.d * p.y + this.ty * p.z,
+        };  
+    },
+    
     toString: function() {
         return "matrix(" + this.a + "," + this.b + "," + this.c + "," + this.d + "," + this.tx + "," + this.ty + ")";
     }

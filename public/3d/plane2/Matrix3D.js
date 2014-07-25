@@ -111,48 +111,53 @@ NS.Matrix3D.prototype = {
     },
     
     rotateX: function(angle) {
-        var c = Math.cos(angle),
-            s = Math.sin(angle);
+        var cos = Math.cos(angle),
+            sin = Math.sin(angle);
         
-        var m = [ 1, 0,  0, 0,
-                  0, c, -s, 0,
-                  0, s,  c, 0,
-                  0, 0,  0, 1 ];
+        var m = [ 1,   0,    0, 0,
+                  0, cos, -sin, 0,
+                  0, sin,  cos, 0,
+                  0,   0,    0, 1 ];
 
         return this.concat(new NS.Matrix3D(m));
     },
     
     rotateY: function(angle) {
-        var c = Math.cos(angle),
-            s = Math.sin(angle);
+        var cos = Math.cos(angle),
+            sin = Math.sin(angle);
         
-        var m = [ c, 0, s, 0,
-                  0, 1, 0, 0,
-                 -s, 0, c, 0,
-                  0, 0, 0, 1 ];
+        var m = [ cos, 0, sin, 0,
+                    0, 1,   0, 0,
+                 -sin, 0, cos, 0,
+                    0, 0,   0, 1 ];
         
         return this.concat(new NS.Matrix3D(m));
     },
     
     rotateZ: function(angle) {
-        var c = Math.cos(angle),
-            s = Math.sin(angle);
+        var cos = Math.cos(angle),
+            sin = Math.sin(angle);
 
-        var m = [ c, -s, 0, 0,
-                  s,  c, 0, 0,
-                  0,  0, 1, 0,
-                  0,  0, 0, 1 ];
+        var m = [ cos, -sin, 0, 0,
+                  sin,  cos, 0, 0,
+                    0,    0, 1, 0,
+                    0,    0, 0, 1 ];
                   
         return this.concat(new NS.Matrix3D(m));
     },
     
-    // TODO: imple transform3D
-    transform3D: function(p) {
-        
-//        var x = this.a*x + this.d*y + this.g*z,
-//            y = this.b*x + this.e*y + this.h*z,
-//            z = this.c*x + this.f*y + this.i*z;
-        
+    /**
+     * | m00, m01, m02, m03 |   | x |
+     * | m10, m11, m12, m13 | * | y |
+     * | m20, m21, m22, m23 |   | z |
+     * | m30, m31, m32, m33 |   | 1 |
+     */
+    transform: function(v) {
+        return {
+            x: this.m00 * v.x + this.m01 * v.y + this.m02 * v.z,
+            y: this.m10 * v.x + this.m11 * v.y + this.m12 * v.z,
+            z: this.m20 * v.x + this.m21 * v.y + this.m22 * v.z
+        };
     },
     
     toString: function() {
