@@ -1,6 +1,4 @@
-/**
- * twip: 1/20 -> 0.05 단위로 좌표 계산
- */
+
 window.onload = function() {
     var canvas = document.getElementById("canvas"),
         context = canvas.getContext("2d"),
