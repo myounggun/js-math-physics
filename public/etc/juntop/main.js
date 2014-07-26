@@ -23,10 +23,11 @@ window.onload = function() {
     
     points.sort(function(a, b) {
         if (a.x == b.x) {
-            return a.y - a.y;
+            return a.y - b.y;
         }
         return a.x - b.x;
      });
+    
     
     var sp = points[0],
         ep = points[points.length - 1];
