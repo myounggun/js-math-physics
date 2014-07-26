@@ -28,10 +28,21 @@ window.onload = function() {
         return a.x - b.x;
      });
     
+
+    points.sort(function(a, b) {
+        return a.x - b.x; 
+     });
     
-    var sp = points[0],
-        ep = points[points.length - 1];
+    var startX = points[0].x;
+    var endX = points[points.length - 1].x;
+    
+    points.sort(function(a, b) {
+       return a.y - b.y; 
+    });
+    
+    var startY = points[0].y;
+    var endY = points[points.length - 1].y;
     
     context.fillStyle = "#ff0000";
-    context.fillRect(sp.x, sp.y, ep.x - sp.x, ep.y - sp.y);
+    context.fillRect(startX, startY, endX - startX, endY - startY);
 };
