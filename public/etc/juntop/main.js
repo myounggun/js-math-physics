@@ -7,7 +7,7 @@ window.onload = function() {
     
     drawText(getRandomPoint(), "채명석", "#000000");
     drawText(getRandomPoint(), "황준상", "#000000");
-//    drawText(getRandomPoint(), "테스트", "#000000");
+    drawText(getRandomPoint(), "테스트", "#000000");
     
     var collisonPoints = [],
         txtIndex = 0,
