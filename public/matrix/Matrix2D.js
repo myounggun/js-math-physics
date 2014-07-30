@@ -75,6 +75,14 @@ NS.Matrix2D.prototype = {
         };  
     },
     
+    /**
+     * | a  c tx |    |  a  b  0 |
+     * | b  d ty | -> |  c  d  0 |
+     * | 0  0  1 |    | tx ty  1 |
+     */
+    transpose: function() {
+    },
+    
     toString: function() {
         return "matrix(" + this.a + "," + this.b + "," + this.c + "," + this.d + "," + this.tx + "," + this.ty + ")";
     }

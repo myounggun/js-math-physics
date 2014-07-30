@@ -91,6 +91,21 @@ NS.Matrix3D.prototype = {
 
         return new NS.Matrix3D(m);
     },
+    
+    /**
+     * | m00, m01, m02, m03 |    | m00, m10, m20, m30 |
+     * | m10, m11, m12, m13 | -> | m01, m11, m21, m31 |
+     * | m20, m21, m22, m23 |    | m02, m12, m22, m32 |
+     * | m30, m31, m32, m33 |    | m03, m13, m23, m33 |
+     */
+    transpose: function() {
+        var m = [ this.m00, this.m10, this.m20, this.m30,
+                  this.m01, this.m11, this.m21, this.m31,
+                  this.m02, this.m12, this.m22, this.m32,
+                  this.m03, this.m13, this.m23, this.m33 ];
+        
+        return new NS.Matrix3D(m);
+    },
 
     translate: function(tx, ty, tz) {
         var m = [ 1, 0, 0, tx,
