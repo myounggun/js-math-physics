@@ -12,11 +12,11 @@
  * | m30, m31, m32, m33(tw) |
  *   (x)  (y)  (z)           - axis
  */
-!window.mg && (window.mg = {});
-!window.mg.geom && (window.mg.geom = {});
+!window.m3d && (window.m3d = {});
+!window.m3d.geom && (window.m3d.geom = {});
 
 (function() {
-var NS = mg.geom;
+var NS = m3d.geom;
 
 NS.Matrix3D = function(m) {
     if (!m) {

@@ -1,5 +1,5 @@
 /**
- * Mental Graphics by myounggun@gmail.com
+                                                                                                                             `      ``      `````` * Mental Graphics by myounggun@gmail.com
  * 
  * Matrix2D.js 
  * 
@@ -81,6 +81,15 @@ NS.Matrix2D.prototype = {
      * | 0  0  1 |    | tx ty  1 |
      */
     transpose: function() {
+//        return new NS.Matrix2D(this.a, this.c, this.b, this.d, 0, 0);
+    },
+    
+    invert: function() {
+        
+    },
+    
+    clone: function() {
+        return new NS.Matrix2D(this.a, this.b, this.c, this.d, this.tx, this.ty);
     },
     
     toString: function() {

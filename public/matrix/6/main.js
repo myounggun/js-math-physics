@@ -14,9 +14,9 @@ window.onload = function() {
     {
         // https://github.com/STRd6/matrix.js
         var m = new Matrix(1, 0, 0, 1, 0, 0);
-        m = m.scale(1, 1, new Point(0, 0));
+//        m = m.scale(2, 2, new Point(0, 0));
         m = m.rotate(Math.PI / 180 * 10, new Point(0, 0));
-       // m = m.translate(e.layerX, e.layerY);
+//        m = m.translate(100, 100);
         
         canvas.style.position = "relative";
         canvas.style.webkitTransformOrigin = "left top";
