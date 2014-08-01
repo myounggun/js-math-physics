@@ -28,9 +28,12 @@ NS.Camera3D.prototype = {
 //                  aX.y, aY.y, aZ.y, ty,
 //                  aX.z, aY.z, aZ.z, tz,
 //                     0,    0,    0,  1 ];
-//      matrix^T
+//        
+//        var mat = new m3d.geom.Matrix3D(m);
+        
+//      matrix^Transpose
         var m = [ aX.x, aX.y, aX.z, tx,
-                  aY.x, aY.y, aZ.z, ty,
+                  aY.x, aY.y, aY.z, ty,
                   aZ.x, aZ.y, aZ.z, tz,
                      0,    0,    0,  1 ];
         

@@ -20,10 +20,8 @@ var NS = m3d.geom;
 
 NS.Matrix3D = function(m) {
     if (!m) {
-        m = [ 1, 0, 0, 0,
-              0, 1, 0, 0,
-              0, 0, 1, 0,
-              0, 0, 0, 1 ];
+        this.identity();
+        return;
     }
     
     this.m00 = m[0];
@@ -55,56 +53,33 @@ NS.Matrix3D.prototype = {
      * | m30, m31, m32, m33 |   | m30, m31, m32, m33 |
      */
     concat: function(m) {
-        var m00 = this.m00 * m.m00 + this.m01 * m.m10 + this.m02 * m.m20 + this.m03 * m.m30,
-            m01 = this.m00 * m.m01 + this.m01 * m.m11 + this.m02 * m.m21 + this.m03 * m.m31,
-            m02 = this.m00 * m.m02 + this.m01 * m.m12 + this.m02 * m.m22 + this.m03 * m.m32,
-            m03 = this.m00 * m.m03 + this.m01 * m.m13 + this.m02 * m.m23 + this.m03 * m.m33,
+        this.m00 = this.m00 * m.m00 + this.m01 * m.m10 + this.m02 * m.m20 + this.m03 * m.m30;
+        this.m01 = this.m00 * m.m01 + this.m01 * m.m11 + this.m02 * m.m21 + this.m03 * m.m31;
+        this.m02 = this.m00 * m.m02 + this.m01 * m.m12 + this.m02 * m.m22 + this.m03 * m.m32;
+        this.m03 = this.m00 * m.m03 + this.m01 * m.m13 + this.m02 * m.m23 + this.m03 * m.m33;
             
-            m10 = this.m10 * m.m00 + this.m11 * m.m10 + this.m12 * m.m20 + this.m13 * m.m30,
-            m11 = this.m10 * m.m01 + this.m11 * m.m11 + this.m12 * m.m21 + this.m13 * m.m31,
-            m12 = this.m10 * m.m02 + this.m11 * m.m12 + this.m12 * m.m22 + this.m13 * m.m32,
-            m13 = this.m10 * m.m03 + this.m11 * m.m13 + this.m12 * m.m23 + this.m13 * m.m33,
+        this.m10 = this.m10 * m.m00 + this.m11 * m.m10 + this.m12 * m.m20 + this.m13 * m.m30;
+        this.m11 = this.m10 * m.m01 + this.m11 * m.m11 + this.m12 * m.m21 + this.m13 * m.m31;
+        this.m12 = this.m10 * m.m02 + this.m11 * m.m12 + this.m12 * m.m22 + this.m13 * m.m32;
+        this.m13 = this.m10 * m.m03 + this.m11 * m.m13 + this.m12 * m.m23 + this.m13 * m.m33;
             
-            m20 = this.m20 * m.m00 + this.m21 * m.m10 + this.m22 * m.m20 + this.m23 * m.m30,
-            m21 = this.m20 * m.m01 + this.m21 * m.m11 + this.m22 * m.m21 + this.m23 * m.m31,
-            m22 = this.m20 * m.m02 + this.m21 * m.m12 + this.m22 * m.m22 + this.m23 * m.m32,
-            m23 = this.m20 * m.m03 + this.m21 * m.m13 + this.m22 * m.m23 + this.m23 * m.m33,
+        this.m20 = this.m20 * m.m00 + this.m21 * m.m10 + this.m22 * m.m20 + this.m23 * m.m30;
+        this.m21 = this.m20 * m.m01 + this.m21 * m.m11 + this.m22 * m.m21 + this.m23 * m.m31;
+        this.m22 = this.m20 * m.m02 + this.m21 * m.m12 + this.m22 * m.m22 + this.m23 * m.m32;
+        this.m23 = this.m20 * m.m03 + this.m21 * m.m13 + this.m22 * m.m23 + this.m23 * m.m33;
             
-            m30 = this.m30 * m.m00 + this.m31 * m.m10 + this.m32 * m.m20 + this.m33 * m.m30,
-            m31 = this.m30 * m.m01 + this.m31 * m.m11 + this.m32 * m.m21 + this.m33 * m.m31,
-            m32 = this.m30 * m.m02 + this.m31 * m.m12 + this.m32 * m.m22 + this.m33 * m.m32,
-            m33 = this.m30 * m.m03 + this.m31 * m.m13 + this.m32 * m.m23 + this.m33 * m.m33,
-            
-            m = [ m00, m01, m02, m03,
-                  m10, m11, m12, m13,
-                  m20, m21, m22, m23,
-                  m30, m31, m32, m33 ];
-        
-        return new NS.Matrix3D(m);
-    },
-
-    identity: function() {
-        var m = [ 1, 0, 0, 0,
-                  0, 1, 0, 0,
-                  0, 0, 1, 0,
-                  0, 0, 0, 1 ];
-
-        return new NS.Matrix3D(m);
+        this.m30 = this.m30 * m.m00 + this.m31 * m.m10 + this.m32 * m.m20 + this.m33 * m.m30;
+        this.m31 = this.m30 * m.m01 + this.m31 * m.m11 + this.m32 * m.m21 + this.m33 * m.m31;
+        this.m32 = this.m30 * m.m02 + this.m31 * m.m12 + this.m32 * m.m22 + this.m33 * m.m32;
+        this.m33 = this.m30 * m.m03 + this.m31 * m.m13 + this.m32 * m.m23 + this.m33 * m.m33;
     },
     
-    /**
-     * | m00, m01, m02, m03 |    | m00, m10, m20, m30 |
-     * | m10, m11, m12, m13 | -> | m01, m11, m21, m31 |
-     * | m20, m21, m22, m23 |    | m02, m12, m22, m32 |
-     * | m30, m31, m32, m33 |    | m03, m13, m23, m33 |
-     */
-    transpose: function() {
-        var m = [ this.m00, this.m10, this.m20, this.m30,
-                  this.m01, this.m11, this.m21, this.m31,
-                  this.m02, this.m12, this.m22, this.m32,
-                  this.m03, this.m13, this.m23, this.m33 ];
-        
-        return new NS.Matrix3D(m);
+    identity: function() {
+        this.m01 = this.m02 = this.m03 = 0;
+        this.m10 = this.m12 = this.m13 = 0;
+        this.m20 = this.m21 = this.m23 = 0;
+        this.m30 = this.m31 = this.m32 = 0;
+        this.m00 = this.m11 = this.m22 = this.m33 = 1;
     },
 
     translate: function(tx, ty, tz) {
@@ -113,7 +88,7 @@ NS.Matrix3D.prototype = {
                   0, 0, 1, tz,
                   0, 0, 0,  1 ];
 
-        return this.concat(new NS.Matrix3D(m));
+        this.concat(new NS.Matrix3D(m));
     },
     
     scale: function(sx, sy, sz) {
@@ -122,7 +97,7 @@ NS.Matrix3D.prototype = {
                   0,  0, sz, 0,
                   0,  0,  0, 1 ];
 
-        return this.concat(new NS.Matrix3D(m));
+        this.concat(new NS.Matrix3D(m));
     },
     
     rotateX: function(angle) {
@@ -134,7 +109,7 @@ NS.Matrix3D.prototype = {
                   0, sin,  cos, 0,
                   0,   0,    0, 1 ];
 
-        return this.concat(new NS.Matrix3D(m));
+        this.concat(new NS.Matrix3D(m));
     },
     
     rotateY: function(angle) {
@@ -146,7 +121,7 @@ NS.Matrix3D.prototype = {
                  -sin, 0, cos, 0,
                     0, 0,   0, 1 ];
         
-        return this.concat(new NS.Matrix3D(m));
+        this.concat(new NS.Matrix3D(m));
     },
     
     rotateZ: function(angle) {
@@ -158,7 +133,7 @@ NS.Matrix3D.prototype = {
                     0,    0, 1, 0,
                     0,    0, 0, 1 ];
                   
-        return this.concat(new NS.Matrix3D(m));
+        this.concat(new NS.Matrix3D(m));
     },
     
     /**
@@ -169,9 +144,9 @@ NS.Matrix3D.prototype = {
      */
     transform: function(v) {
         return {
-            x: this.m00 * v.x + this.m01 * v.y + this.m02 * v.z,
-            y: this.m10 * v.x + this.m11 * v.y + this.m12 * v.z,
-            z: this.m20 * v.x + this.m21 * v.y + this.m22 * v.z
+            x: this.m00 * v.x + this.m01 * v.y + this.m02 * v.z + this.m03,
+            y: this.m10 * v.x + this.m11 * v.y + this.m12 * v.z + this.m13,
+            z: this.m20 * v.x + this.m21 * v.y + this.m22 * v.z + this.m23
         };
     },
     
@@ -185,8 +160,57 @@ NS.Matrix3D.prototype = {
     },
     
     toString: function() {
-        return "matrix3d()";
+        return "matrix3d(" + 
+                this.m00 + "," + this.m01 + "," + this.m02 + "," + this.m03 + "\n" +
+                this.m10 + "," + this.m11 + "," + this.m12 + "," + this.m13 + "\n" +
+                this.m20 + "," + this.m21 + "," + this.m22 + "," + this.m23 + "\n" +
+                this.m30 + "," + this.m31 + "," + this.m32 + "," + this.m33 + ")";
     }
+};
+
+NS.Matrix3D.multiply = function(a, b) {
+    var m = new NS.Matrix3D();
+
+    m.m00 = a.m00 * b.m00 + a.m01 * b.m10 + a.m02 * b.m20;
+    m.m01 = a.m00 * b.m01 + a.m01 * b.m11 + a.m02 * b.m21;
+    m.m02 = a.m00 * b.m02 + a.m01 * b.m12 + a.m02 * b.m22;
+    m.m03 = a.m00 * b.m03 + a.m01 * b.m13 + a.m02 * b.m23 + a.m03;
+      
+    m.m10 = a.m10 * b.m00 + a.m11 * b.m10 + a.m12 * b.m20;
+    m.m11 = a.m10 * b.m01 + a.m11 * b.m11 + a.m12 * b.m21;
+    m.m12 = a.m10 * b.m02 + a.m11 * b.m12 + a.m12 * b.m22;
+    m.m13 = a.m10 * b.m03 + a.m11 * b.m13 + a.m12 * b.m23 + a.m13;
+
+    m.m20 = a.m20 * b.m00 + a.m21 * b.m10 + a.m22 * b.m20;
+    m.m21 = a.m20 * b.m01 + a.m21 * b.m11 + a.m22 * b.m21;
+    m.m22 = a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22;
+    m.m23 = a.m20 * b.m03 + a.m21 * b.m13 + a.m22 * b.m23 + a.m23;
+    
+    return m;
+};
+
+/**
+ * | m00, m01, m02, m03 |    | m00, m10, m20, m30 |
+ * | m10, m11, m12, m13 | -> | m01, m11, m21, m31 |
+ * | m20, m21, m22, m23 |    | m02, m12, m22, m32 |
+ * | m30, m31, m32, m33 |    | m03, m13, m23, m33 |
+ */
+NS.Matrix3D.transpose = function(m) {
+    var mt = [ m.m00, m.m10, m.m20, m.m30,
+               m.m01, m.m11, m.m21, m.m31,
+               m.m02, m.m12, m.m22, m.m32,
+               m.m03, m.m13, m.m23, m.m33 ];
+    
+    return new NS.Matrix3D(mt);
+};
+
+NS.Matrix3D.identity = function() {
+    var m = [ 1, 0, 0, 0,
+              0, 1, 0, 0,
+              0, 0, 1, 0,
+              0, 0, 0, 1 ];
+
+    return new NS.Matrix3D(m);
 };
 
 })();

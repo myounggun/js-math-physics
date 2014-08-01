@@ -5,7 +5,7 @@ window.onload = function() {
         height = canvas.height = 800,//window.innerHeight,
         gridSize = 50,
         focalLength = 300,
-        points = [],
+        vertexList = [],
         changed = true,
         centerZ = 0,
         m = new m3d.geom.Matrix3D()
@@ -15,90 +15,90 @@ window.onload = function() {
         engine = m3d.M3D.getInstance();
     
     engine.setScreen(canvas, width, height);
-    camera.setView(new Vector3D(100, 100, -700), new Vector3D(0, 0, 0), new Vector3D(0, 1, 0));
+    camera.setView(new Vector3D(0, 0, -3000), new Vector3D(0, 0, 0), new Vector3D(0, 1, 0));
     context.translate(width / 2, height / 2);
 
     var size = 250;
     // plane
-//    points[0] = {x: -size, y:  size, z: size};
-//    points[1] = {x:  size, y:  size, z: size}; 
-//    points[2] = {x: -size, y: -size, z: size}; 
-//    points[3] = {x:  size, y: -size, z: size};
+    vertexList[0] = new m3d.geom.Vertex(-size,  size, size);
+    vertexList[1] = new m3d.geom.Vertex( size,  size, size); 
+    vertexList[2] = new m3d.geom.Vertex(-size, -size, size); 
+    vertexList[3] = new m3d.geom.Vertex( size, -size, size);
+    console.log(vertexList);
     
     // cube
-    points[0] = {x: -size, y: -size, z:  size};
-    points[1] = {x:  size, y: -size, z:  size}; 
-    points[2] = {x:  size, y: -size, z: -size}; 
-    points[3] = {x: -size, y: -size, z: -size};
-    points[4] = {x: -size, y:  size, z:  size};
-    points[5] = {x:  size, y:  size, z:  size}; 
-    points[6] = {x:  size, y:  size, z: -size}; 
-    points[7] = {x: -size, y:  size, z: -size};
+//    vertexList[0] = {x: -size, y: -size, z:  size};
+//    vertexList[1] = {x:  size, y: -size, z:  size}; 
+//    vertexList[2] = {x:  size, y: -size, z: -size}; 
+//    vertexList[3] = {x: -size, y: -size, z: -size};
+//    vertexList[4] = {x: -size, y:  size, z:  size};
+//    vertexList[5] = {x:  size, y:  size, z:  size}; 
+//    vertexList[6] = {x:  size, y:  size, z: -size}; 
+//    vertexList[7] = {x: -size, y:  size, z: -size};
 
     
     function drawVertexLine() {
-        var p = points[arguments[0]];
-        context.moveTo(p.sx, p.sy);
+        var vertex = vertexList[arguments[0]];
+        context.moveTo(vertex.sx, vertex.sy);
+        console.log
         
         for (var i = 1; i < arguments.length; i++) {
-            p = points[arguments[i]];
-            context.lineTo(p.sx, p.sy);
+            vertex = vertexList[arguments[i]];
+            context.lineTo(vertex.sx, vertex.sy);
         }
     }
     
     function translateModel(x, y, z) {
-        for (var i = 0; i < points.length; i++) {
-            var p = points[i];
-            p.x += x;
-            p.y += y;
-            p.z += z;
+        for (var i = 0; i < vertexList.length; i++) {
+            var vertex = vertexList[i];
+            vertex.x += x;
+            vertex.y += y;
+            vertex.z += z;
         }
         
         changed = true;
     }
     
     function rotateX(angle) {
-        m = m.rotateX(angle);
+        m.rotateX(angle);
         
         changed = true;
     }
     
     function rotateY(angle) {
-        m = m.rotateY(angle);
+        m.rotateY(angle);
         
         changed = true;
     }
     
     function rotateZ(angle) {
-        m = m.rotateZ(angle);
+        m.rotateZ(angle);
         
         changed = true;
     }
     
-    function getTransformVertices() {
-        m = m.concat(camera.getViewMatrix());
-//        m = m.concat(camera.getViewProjectMatrix());
-        var vertices = [];
-        for (var i = 0; i < points.length; i++) {
-            var p = points[i],
-                vertex = m.transform(p);
-            
-            vertices.push(vertex);
-        }
+    function transformVertices() {
+        console.log(camera.getViewMatrix());
         
-        return vertices;
+        var cameraMat = camera.getViewProjectMatrix();
+        var finalMat = m3d.geom.Matrix3D.multiply(cameraMat, m);//cameraMat.concat(m);//m.concat(camera.getViewMatrix());
+        console.log(m);
+        for (var i = 0; i < vertexList.length; i++) {
+            var vertex = vertexList[i];
+            vertex.project(finalMat);
+        }
     }
     
-    function perspectiveProject(vertices) {
-        for (var i = 0; i < vertices.length; i++) {
-            var v = vertices[i],
-                p = points[i],
-                scale = focalLength / (focalLength + v.z + centerZ);
-            
-            p.sx = v.x * scale;
-            p.sy = v.y * scale;
-        }
-    }
+//    function perspectiveProject(vertices) {
+//        for (var i = 0; i < vertices.length; i++) {
+//            var v = vertices[i],
+//                p = vertexList[i],
+//                scale = focalLength / (focalLength + v.z);
+//            
+//            p.sx = v.x * scale;
+//            p.sy = v.y * scale;
+//        }
+//    }
     
     document.body.addEventListener("keydown", function(event) {
         console.log(event.keyCode);
@@ -155,13 +155,24 @@ window.onload = function() {
             drawGrid();
             drawXYAxis();
  
-            perspectiveProject(getTransformVertices());
+//            perspectiveProject(getTransformVertices());
+            transformVertices();
             
             context.save();
             context.beginPath();
             
+            // plane
             drawVertexLine(0, 1, 2, 0);
             drawVertexLine(1, 3, 2, 1);
+            
+            // cube
+//            drawVertexLine(0, 1, 2, 3, 0);
+//            drawVertexLine(4, 5, 6, 7, 4);
+//            drawVertexLine(0, 4);
+//            drawVertexLine(1, 5);
+//            drawVertexLine(2, 6);
+//            drawVertexLine(3, 7);
+            
             context.strokeStyle = "#000000";
             context.stroke();
             context.closePath();

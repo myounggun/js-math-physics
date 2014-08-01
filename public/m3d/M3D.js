@@ -52,6 +52,4 @@ NS.M3D.getInstance = function() {
     return INSTANCE;
 };
 
-})();/**
- * New node file
- */
+})();
