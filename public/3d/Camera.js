@@ -9,22 +9,30 @@
 (function() {
 var NS = mg.core;
 
-NS.Camera = function(position, lookAt, up) {
-    this.position = position;
-    this.lookAt = lookAt;
-    this.up = up;
-    
-    this._setMatrix(position, lookAt, up);
+NS.Camera = function(eye, lookAt, up) {
+    this._setMatrix(eye, lookAt, up);
 }
 
 NS.Camera.prototype = {
-    _setMatrix: function(position, lookAt, up) {
-        var aZ = lookAt.subtract(position).normalize(),
+    setEye: function(eye) {
+        var dEye = eye.subtract(this.eye);
+//        this.lookAt = this.lookAt.add(dEye);
+          
+        this.eye = eye.clone();
+        this._setMatrix(this.eye, this.lookAt, this.up);
+    },
+    
+    _setMatrix: function(eye, lookAt, up) {
+        this.eye = eye;
+        this.lookAt = lookAt;
+        this.up = up;
+        
+        var aZ = lookAt.subtract(eye).normalize(),
             aX = up.cross(aZ).normalize(),
             aY = aZ.cross(aX),
-            tx = -aX.dot(position),
-            ty = -aY.dot(position),
-            tz = -aZ.dot(position);
+            tx = -aX.dot(eye),
+            ty = -aY.dot(eye),
+            tz = -aZ.dot(eye);
         
         var m = [ aX.x, aY.x, aZ.x, tx,
                   aX.y, aY.y, aZ.y, ty,

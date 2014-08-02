@@ -11,30 +11,30 @@ window.onload = function() {
         m = new m3d.geom.Matrix3D()
         worldMat = new m3d.geom.Matrix3D(),
         localMat = new m3d.geom.Matrix3D(),
-        camera = new m3d.Camera3D(),
+        camera = new m3d.Camera3D(90, width / height, 1, 2000),
         engine = m3d.M3D.getInstance();
     
     engine.setScreen(canvas, width, height);
-    camera.setView(new Vector3D(0, 0, -3000), new Vector3D(0, 0, 0), new Vector3D(0, 1, 0));
+    camera.lookAt(new Vector3D(200, 200, 700), new Vector3D(0, 0, 0), new Vector3D(0, 1, 0));
     context.translate(width / 2, height / 2);
 
-    var size = 250;
+    var size = 100;
     // plane
-    vertexList[0] = new m3d.geom.Vertex(-size,  size, size);
-    vertexList[1] = new m3d.geom.Vertex( size,  size, size); 
-    vertexList[2] = new m3d.geom.Vertex(-size, -size, size); 
-    vertexList[3] = new m3d.geom.Vertex( size, -size, size);
-    console.log(vertexList);
+//    vertexList[0] = new m3d.geom.Vertex(-size,  size, size);
+//    vertexList[1] = new m3d.geom.Vertex( size,  size, size); 
+//    vertexList[2] = new m3d.geom.Vertex(-size, -size, size); 
+//    vertexList[3] = new m3d.geom.Vertex( size, -size, size);
+//    console.log(vertexList);
     
     // cube
-//    vertexList[0] = {x: -size, y: -size, z:  size};
-//    vertexList[1] = {x:  size, y: -size, z:  size}; 
-//    vertexList[2] = {x:  size, y: -size, z: -size}; 
-//    vertexList[3] = {x: -size, y: -size, z: -size};
-//    vertexList[4] = {x: -size, y:  size, z:  size};
-//    vertexList[5] = {x:  size, y:  size, z:  size}; 
-//    vertexList[6] = {x:  size, y:  size, z: -size}; 
-//    vertexList[7] = {x: -size, y:  size, z: -size};
+    vertexList[0] = new m3d.geom.Vertex(-size, -size,  size);
+    vertexList[1] = new m3d.geom.Vertex( size, -size,  size); 
+    vertexList[2] = new m3d.geom.Vertex( size, -size, -size); 
+    vertexList[3] = new m3d.geom.Vertex(-size, -size, -size);
+    vertexList[4] = new m3d.geom.Vertex(-size,  size,  size);
+    vertexList[5] = new m3d.geom.Vertex( size,  size,  size); 
+    vertexList[6] = new m3d.geom.Vertex( size,  size, -size); 
+    vertexList[7] = new m3d.geom.Vertex(-size,  size, -size);
 
     
     function drawVertexLine() {
@@ -60,35 +60,35 @@ window.onload = function() {
     }
     
     function rotateX(angle) {
-        m.rotateX(angle);
+        m = m.rotateX(angle);
         
         changed = true;
     }
     
     function rotateY(angle) {
-        m.rotateY(angle);
+        m = m.rotateY(angle);
         
         changed = true;
     }
     
     function rotateZ(angle) {
-        m.rotateZ(angle);
+        m = m.rotateZ(angle);
         
         changed = true;
     }
     
     function transformVertices() {
-        console.log(camera.getViewMatrix());
+        var cameraMat = camera.getViewProjMatrix();
+        var finalMat = cameraMat.multiply(m);
         
-        var cameraMat = camera.getViewProjectMatrix();
-        var finalMat = m3d.geom.Matrix3D.multiply(cameraMat, m);//cameraMat.concat(m);//m.concat(camera.getViewMatrix());
-        console.log(m);
+        console.log('finalM =', m);
         for (var i = 0; i < vertexList.length; i++) {
             var vertex = vertexList[i];
             vertex.project(finalMat);
         }
     }
     
+//    test
 //    function perspectiveProject(vertices) {
 //        for (var i = 0; i < vertices.length; i++) {
 //            var v = vertices[i],
@@ -162,16 +162,16 @@ window.onload = function() {
             context.beginPath();
             
             // plane
-            drawVertexLine(0, 1, 2, 0);
-            drawVertexLine(1, 3, 2, 1);
+//            drawVertexLine(0, 1, 2, 0);
+//            drawVertexLine(1, 3, 2, 1);
             
             // cube
-//            drawVertexLine(0, 1, 2, 3, 0);
-//            drawVertexLine(4, 5, 6, 7, 4);
-//            drawVertexLine(0, 4);
-//            drawVertexLine(1, 5);
-//            drawVertexLine(2, 6);
-//            drawVertexLine(3, 7);
+            drawVertexLine(0, 1, 2, 3, 0);
+            drawVertexLine(4, 5, 6, 7, 4);
+            drawVertexLine(0, 4);
+            drawVertexLine(1, 5);
+            drawVertexLine(2, 6);
+            drawVertexLine(3, 7);
             
             context.strokeStyle = "#000000";
             context.stroke();

@@ -25,8 +25,8 @@ NS.Vertex.prototype = {
             y = m.m10 * this.x + m.m11 * this.y + m.m12 * this.z + m.m13,
             z = m.m20 * this.x + m.m21 * this.y + m.m22 * this.z + m.m23;
 
-        this.sx =  x / z;
-        this.sy = -y / z;
+        this.sx =  x;
+        this.sy =  y;
     },
     
     clone: function() {

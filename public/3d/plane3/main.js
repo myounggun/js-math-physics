@@ -8,14 +8,15 @@ window.onload = function() {
         points = [],
         changed = true,
         centerZ = 1500,
-        m = new mg.geom.Matrix3D()
+        m = new mg.geom.Matrix3D(),
         worldMat = new mg.geom.Matrix3D(),
         localMat = new mg.geom.Matrix3D(),
-        camera = new mg.core.Camera(new Vector3D(0, 0, -300), new Vector3D(0, 0, 0), new Vector3D(0, 1, 0));
+        camera = new mg.core.Camera(new Vector3D(0, 0, -700), new Vector3D(0, 0, 1), new Vector3D(0, 1, 0));
     
     context.translate(width / 2, height / 2);
     
-    console.log(camera.getMatrix());
+//    console.log(camera.getMatrix());
+    //camera.setEye(new Vector3D(0,-100, 300));
     // plane
     points[0] = {x: -500, y: -500, z: 500};
     points[1] = {x:  500, y: -500, z: 500}; 
@@ -63,10 +64,15 @@ window.onload = function() {
     }
     
     function getTransformVertices() {
+//        console.log(m);
+        m = m.concat(camera.getMatrix());
+        console.log(camera, m);
         var vertices = [];
         for (var i = 0; i < points.length; i++) {
             var p = points[i],
                 vertex = m.transform(p);
+            
+            console.log(p);
             
             vertices.push(vertex);
         }

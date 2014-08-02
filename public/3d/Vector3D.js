@@ -83,5 +83,8 @@ Vector3D.prototype =
                 out.y = y;
                 out.z = x * sinA + z * cosA;
                 return out;
+        },
+        clone: function() {
+            return new Vector3D(this.x, this.y, this.z);
         }
 };
