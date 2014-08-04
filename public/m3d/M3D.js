@@ -24,8 +24,8 @@ NS.M3D.prototype = {
         };
         
         this._clipRect = {
-            x: -width / 2,
-            y: -height / 2,
+            x: 0,//-width / 2,
+            y: 0,//-height / 2,
             width: width,
             height: height
         };

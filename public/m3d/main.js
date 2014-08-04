@@ -4,21 +4,17 @@ window.onload = function() {
         width = canvas.width = 800,//window.innerWidth,
         height = canvas.height = 800,//window.innerHeight,
         gridSize = 50,
-        focalLength = 300,
         vertexList = [],
         changed = true,
-        centerZ = 0,
-        m = new m3d.geom.Matrix3D()
         worldMat = new m3d.geom.Matrix3D(),
-        localMat = new m3d.geom.Matrix3D(),
-        camera = new m3d.Camera3D(90, width / height, 1, 2000),
+        camera = new m3d.Camera3D(45, width / height, 20, 1000),
         engine = m3d.M3D.getInstance();
     
     engine.setScreen(canvas, width, height);
-    camera.lookAt(new Vector3D(200, 200, 700), new Vector3D(0, 0, 0), new Vector3D(0, 1, 0));
-    context.translate(width / 2, height / 2);
+    camera.lookAt(new Vector3D(1500, 1500, -3000), new Vector3D(0, 0, 0), new Vector3D(0, 1, 0));
+//    context.translate(width / 2, height / 2);
 
-    var size = 100;
+    var size = 500;
     // plane
 //    vertexList[0] = new m3d.geom.Vertex(-size,  size, size);
 //    vertexList[1] = new m3d.geom.Vertex( size,  size, size); 
@@ -39,105 +35,110 @@ window.onload = function() {
     
     function drawVertexLine() {
         var vertex = vertexList[arguments[0]];
-        context.moveTo(vertex.sx, vertex.sy);
+        context.moveTo(vertex.screenX, vertex.screenY);
         console.log
         
         for (var i = 1; i < arguments.length; i++) {
             vertex = vertexList[arguments[i]];
-            context.lineTo(vertex.sx, vertex.sy);
+            context.lineTo(vertex.screenX, vertex.screenY);
         }
     }
     
-    function translateModel(x, y, z) {
-        for (var i = 0; i < vertexList.length; i++) {
-            var vertex = vertexList[i];
-            vertex.x += x;
-            vertex.y += y;
-            vertex.z += z;
-        }
+    function translateWorld(x, y, z) {
+        worldMat = worldMat.translate(x, y, z);
+        
+        changed = true;
+    }
+    
+    function translateZ(dist) {
+        camera.translateZ(dist);
         
         changed = true;
     }
     
     function rotateX(angle) {
-        m = m.rotateX(angle);
+        camera.rotateX(angle);
         
         changed = true;
     }
     
     function rotateY(angle) {
-        m = m.rotateY(angle);
+        camera.rotateY(angle);
         
         changed = true;
     }
     
     function rotateZ(angle) {
-        m = m.rotateZ(angle);
+        camera.rotateZ(angle);
         
         changed = true;
     }
     
     function transformVertices() {
-        var cameraMat = camera.getViewProjMatrix();
-        var finalMat = cameraMat.multiply(m);
+        var viewMat = camera.getViewMatrix();
+        var projMat = camera.getProjMatrix();
         
-        console.log('finalM =', m);
+        // V * W
+        var finalMat;
+        
+        finalMat = viewMat.multiply(worldMat);
+        finalMat = projMat.multiply(finalMat);
+        
+//        console.log('cameraViewProjMatrix-------');
+//        console.log(cameraMat.toString());
+//        console.log('--');
+        
+        console.log('finalMatrix---------');
+        console.log(finalMat.toString());
+        console.log('--');
+        
         for (var i = 0; i < vertexList.length; i++) {
             var vertex = vertexList[i];
-            vertex.project(finalMat);
+            
+            var projVertex = finalMat.transform(vertex);
+            
+            vertex.setScreenPosition(projVertex);
         }
     }
-    
-//    test
-//    function perspectiveProject(vertices) {
-//        for (var i = 0; i < vertices.length; i++) {
-//            var v = vertices[i],
-//                p = vertexList[i],
-//                scale = focalLength / (focalLength + v.z);
-//            
-//            p.sx = v.x * scale;
-//            p.sy = v.y * scale;
-//        }
-//    }
     
     document.body.addEventListener("keydown", function(event) {
         console.log(event.keyCode);
         switch(event.keyCode) {
             // translate
             case 37: // left
-                translateModel(-20, 0, 0);
+                translateWorld(-20, 0, 0);
                 break;
             case 39: // right
-                translateModel(20, 0, 0);
+                translateWorld(20, 0, 0);
                 break
             case 38: // up
                 if (event.shiftKey) {
-                    translateModel(0, 0, 20);
+                    translateZ(20);
                 } else {
-                    translateModel(0, -20, 0);
+                    translateWorld(0, -20, 0);
                 }
                 break;
                 
             case 40: // down
                 if (event.shiftKey) {
-                    translateModel(0, 0, -20);
+                    translateZ(-20);
                 } else {
-                    translateModel(0, 20, 0);
+                    translateWorld(0, 20, 0);
                 }
                 break;
             
             // rotate
             case 65: // A : left
-                rotateY(0.05);
+                rotateY(-0.1);
                 break;
             case 68: // D : right
-                rotateY(-0.05);
+                rotateY(0.1);
                 break;
             case 87: // W : up
-                rotateX(0.05);
+                rotateX(-0.1);
                 break;
             case 83: // S : down
-                rotateX(-0.05);
+                rotateX(0.1);
                 break;
         }
     });
@@ -146,14 +147,15 @@ window.onload = function() {
 
     function update() {
         if (changed) {
-            context.clearRect(-width / 2, -height / 2, width, height);
+//            context.clearRect(-width / 2, -height / 2, width, height);
+            context.clearRect(0, 0, width, height);
     
             var rect = engine.getClipRect();
             context.fillStyle = "rgba(255, 0, 0, 0.3)";
             context.fillRect(rect.x, rect.y, rect.width, rect.height);
             
-            drawGrid();
-            drawXYAxis();
+//            drawGrid();
+//            drawXYAxis();
  
 //            perspectiveProject(getTransformVertices());
             transformVertices();
