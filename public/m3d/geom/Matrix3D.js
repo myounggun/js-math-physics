@@ -167,13 +167,13 @@ NS.Matrix3D.prototype = {
      * | m20, m21, m22, m23 |   | z |
      * | m30, m31, m32, m33 |   | w |
      */
-    transform: function(v) {
-        return {
-            x: this.m00 * v.x + this.m01 * v.y + this.m02 * v.z + this.m03 * v.w,
-            y: this.m10 * v.x + this.m11 * v.y + this.m12 * v.z + this.m13 * v.w,
-            z: this.m20 * v.x + this.m21 * v.y + this.m22 * v.z + this.m23 * v.w,
-            w: this.m30 * v.x + this.m31 * v.y + this.m32 * v.z + this.m33 * v.w
-        };
+    transformVector: function(v) {
+        var x = this.m00 * v.x + this.m01 * v.y + this.m02 * v.z + this.m03 * v.w,
+            y = this.m10 * v.x + this.m11 * v.y + this.m12 * v.z + this.m13 * v.w,
+            z = this.m20 * v.x + this.m21 * v.y + this.m22 * v.z + this.m23 * v.w,
+            w = this.m30 * v.x + this.m31 * v.y + this.m32 * v.z + this.m33 * v.w
+            
+        return new NS.Vector3D(x, y, z, w);
     },
     
     clone: function() {
@@ -193,5 +193,20 @@ NS.Matrix3D.prototype = {
                 this.m30 + "," + this.m31 + "," + this.m32 + "," + this.m33;// + ")";
     }
 };
+
+NS.Matrix3D.lookAt = function(eye, target, up) {
+    var aZ = target.subtract(eye).normalize(),
+        aX = up.cross(aZ).normalize(),
+        aY = aZ.cross(aX),
+        tx = -aX.dot(eye),
+        ty = -aY.dot(eye),
+        tz = -aZ.dot(eye),
+        m = [ aX.x, aX.y, aX.z, tx,
+              aY.x, aY.y, aY.z, ty,
+              aZ.x, aZ.y, aZ.z, tz,
+                 0,    0,    0,  1 ]; //  R^T + eye
+
+    return new m3d.geom.Matrix3D(m);
+}
 
 })();

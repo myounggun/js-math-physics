@@ -9,7 +9,7 @@
 (function() {
 var NS = m3d.geom;
 
-NS.Vertex = function(x, y, z, w) {
+NS.Vertex = function(x, y, z) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -20,9 +20,9 @@ NS.Vertex = function(x, y, z, w) {
 }
 
 NS.Vertex.prototype = {
-    setScreenPosition: function(v) {
-        this.screenX =  v.x / v.w * 400 + 400;
-        this.screenY = -v.y / v.w * 400 + 400;
+    projectVector: function(v) {
+        this.screenX = v.x / v.w;
+        this.screenY = v.y / v.w;
     },
     
     clone: function() {
@@ -30,7 +30,7 @@ NS.Vertex.prototype = {
     },
     
     toString: function() {
-        return "vertex(" + this.x + "," + this.y + "," + this.z + "," + this.w + "/" + this.sx + "," + this.sy + ")";
+        return "vertex(" + this.x + "," + this.y + "," + this.z + "," + this.w + "/" + this.screenX + "," + this.screenY + ")";
     }
 };
 
