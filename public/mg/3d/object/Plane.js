@@ -13,9 +13,11 @@ var NS = mg;
 /**
  * @constructor
  */
-var Plane = function(width, height) {
+var Plane = function(width, height, backfaceCulling) {
     NS.Object3D.call(this);
     
+    this.backfaceCulling = backfaceCulling;
+
     this._setVertices(width / 2, height / 2);
 };
 
@@ -27,6 +29,8 @@ p.constructor = Plane;
 p.render = function(renderTarget, piplineMatrix) {
     this._renderTarget = renderTarget;
     
+//  piplineMatrix = piplineMatrix.multiply(this._m);
+    
     var len = this._vertices.length;
     for (var i = 0; i < len; i++) {
         var vertex = this._vertices[i],
@@ -34,6 +38,19 @@ p.render = function(renderTarget, piplineMatrix) {
         
         vertex.screenX = projectVector.x;
         vertex.screenY = projectVector.y;
+    }
+    
+    var backFaceColor;
+    if (this.backfaceCulling) {
+        var dx  = this._vertices[1].screenX - this._vertices[0].screenX;
+        var dy  = this._vertices[1].screenY - this._vertices[0].screenY;
+        var dx2 = this._vertices[2].screenX - this._vertices[0].screenX;
+        var dy2 = this._vertices[2].screenY - this._vertices[0].screenY;
+//        if (dx*dy2 - dy*dx2 <= 0) {
+        if (dx*dy2 - dy*dx2 > 0) {
+            return;
+            backFaceColor = "#cccccc";
+        }
     }
     
 //    stroke
@@ -56,7 +73,7 @@ p.render = function(renderTarget, piplineMatrix) {
     
     this._drawVertexLine(0, 1, 2, 0);
 
-    this._renderTarget.fillStyle = "#ff0000";
+    this._renderTarget.fillStyle = backFaceColor || "#ff0000";
     this._renderTarget.fill();
 
     this._renderTarget.closePath();
@@ -66,7 +83,7 @@ p.render = function(renderTarget, piplineMatrix) {
     this._renderTarget.beginPath();
     this._drawVertexLine(1, 3, 2, 1);
     
-    this._renderTarget.fillStyle = "#0000ff";
+    this._renderTarget.fillStyle = backFaceColor || "#0000ff";
     this._renderTarget.fill();
     
     this._renderTarget.closePath();
@@ -76,10 +93,10 @@ p.render = function(renderTarget, piplineMatrix) {
 p._setVertices = function(hWidth, hHeight) {
     this._vertices = [];
     
-    this._vertices[0] = new NS.Vertex(-hWidth,  hHeight, -hWidth * 2);
-    this._vertices[1] = new NS.Vertex( hWidth,  hHeight, -hWidth * 2); 
-    this._vertices[2] = new NS.Vertex(-hWidth, -hHeight, -hWidth * 2);
-    this._vertices[3] = new NS.Vertex( hWidth, -hHeight, -hWidth * 2); 
+    this._vertices[0] = new NS.Vertex(-hWidth,  hHeight, 0);
+    this._vertices[1] = new NS.Vertex( hWidth,  hHeight, 0);
+    this._vertices[2] = new NS.Vertex(-hWidth, -hHeight, 0);
+    this._vertices[3] = new NS.Vertex( hWidth, -hHeight, 0);
 };
 
 p._drawVertexLine = function() {

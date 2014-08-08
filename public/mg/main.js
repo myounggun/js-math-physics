@@ -9,8 +9,12 @@ window.onload = function() {
         camera = new NS.Camera3D(30, width / height, 50, 10000),
         engine = NS.M3D.getInstance(),
         plane = new NS.Plane(200, 200);
+        cube = new NS.Cube(100);
     
-    camera.setView(new NS.Vector3D(0, 0, 1500), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
+    plane.backfaceCulling = true;
+    plane.position = new NS.Vector3D(0, 0, 100);
+    cube.position = new NS.Vector3D(0, 0, 0);
+    camera.setView(new NS.Vector3D(0, 0, 1000), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
     engine.setRenderTarget(context, width, height);
     engine.camera = camera;
     
@@ -21,6 +25,8 @@ window.onload = function() {
             
             engine.clear();
             drawXYAxis();
+
+            engine.render(cube);
             engine.render(plane);
 
             changed = false;
@@ -46,18 +52,21 @@ window.onload = function() {
     }
     
     // plane
-    function planeTranslate(x, y, z) {
+    function modelTranslate(x, y, z) {
         plane.translate(x, y, z);
+        cube.translate(x, y, z);
         changed = true;
     }
     
-    function planeRotateX(angle) {
+    function modelRotateX(angle) {
         plane.rotateX(angle);
+        cube.rotateX(angle);
         changed = true;
     }
     
-    function planeRotateY(angle) {
+    function modelRotateY(angle) {
         plane.rotateY(angle);
+        cube.rotateY(angle);
         changed = true;
     }
     
@@ -70,7 +79,7 @@ window.onload = function() {
             // translate
             case 37: // left
                 if (isModelControl) {
-                    planeTranslate(-20, 0, 0);
+                    modelTranslate(-20, 0, 0);
                 } else {
                     camTranslate(-20, 0, 0);
                 }
@@ -78,14 +87,14 @@ window.onload = function() {
                 break;
             case 39: // right
                 if (isModelControl) {
-                    planeTranslate(20, 0, 0);
+                    modelTranslate(20, 0, 0);
                 } else {
                     camTranslate(20, 0, 0);
                 }
                 break
             case 38: // up
                 if (isModelControl) {
-                    planeTranslate(0, 0, -20);
+                    modelTranslate(0, 0, -20);
                 } else {
                     camTranslate(0, 0, -20);
                 }
@@ -93,7 +102,7 @@ window.onload = function() {
                 
             case 40: // down
                 if (isModelControl) {
-                    planeTranslate(0, 0, 20);
+                    modelTranslate(0, 0, 20);
                 } else {
                     camTranslate(0, 0, 20);
                 }
@@ -102,30 +111,30 @@ window.onload = function() {
             // rotate
             case 65: // A : left
                 if (isModelControl) {
-                    planeRotateY(-0.2);
+                    modelRotateY(-0.2);
                 } else {
                     camRotateY(-0.2);
                 }
                 break;
             case 68: // D : right
                 if (isModelControl) {
-                    planeRotateY(0.2);
+                    modelRotateY(0.1);
                 } else {
-                    camRotateY(0.2);
+                    camRotateY(0.1);
                 }
                 break;
             case 87: // W : up
                 if (isModelControl) {
-                    planeRotateX(-0.2);
+                    modelRotateX(-0.1);
                 } else {
-                    camRotateX(-0.2);
+                    camRotateX(-0.1);
                 }
                 break;
             case 83: // S : down
                 if (event.shiftKey) {
-                    planeRotateX(0.2);
+                    modelRotateX(0.1);
                 } else {
-                    camRotateX(0.2);
+                    camRotateX(0.1);
                 }
                 break;
         }

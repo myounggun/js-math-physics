@@ -147,7 +147,7 @@ p.rotateX = function(angle) {
 p.rotateY = function(angle) {
     var cos = Math.cos(angle),
         sin = Math.sin(angle);
-    
+    console.log(this.toString());
     var m = [ cos, 0, sin, 0,
                 0, 1,   0, 0,
              -sin, 0, cos, 0,
