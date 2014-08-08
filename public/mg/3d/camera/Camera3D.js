@@ -22,6 +22,8 @@ var Camera3D = function(fov, aspect, near, far) {
     this._near = near || 50;
     this._far = far || 10000;
     
+    this._m = new NS.Matrix3D();
+
     this._updateProjMatrix();
 };
 
@@ -29,53 +31,52 @@ var p = Camera3D.prototype;
 
 p.constructor = Camera3D;
 
-p.setView = function(eye, target, up) {
+p.lookAt = function(eye, target, up) {
     this._eye = eye;
     this._target = target;
     this._up = up;
     
-    this._viewMatrix = NS.Matrix3D.lookAt(this._eye, this._target, this._up);
+    this._m = NS.Matrix3D.lookAt(this._eye, this._target, this._up);
 };
 
 p.translate = function(x, y, z) {
-    this._eye.x += x;
-    this._eye.y += y;
-    this._eye.z += z;
-    
-    this._updateViewMatrix();
+//    this._eye.x += x;
+//    this._eye.y += y;
+//    this._eye.z += z;
+//    this._updateLookAt();
+    this._m.m03 += x;
+    this._m.m13 += y;
+    this._m.m23 += z;
 };
 
 p.rotateX = function(rad) {
-    this._viewMatrix = this._viewMatrix.rotateX(rad);
+    this._m = this._m.rotateX(rad);
 };
 
 p.rotateY = function(rad) {
-    this._viewMatrix = this._viewMatrix.rotateY(rad);
- 
-    
-//    var m = new mg.Matrix3D;
-//    m = m.rotateY(rad);
-//    
-//    var aZ = this._target.subtract(this._eye).normalize();
-//    console.log('aZ=', aZ);
-//    
-//    this._target = m.transformVector(aZ);
-//    this._target = this._target.add(this._eye);
-//    
-//    this._updateViewMatrix();
+    this._m = this._m.rotateY(-rad);
 };
 
 p.getViewMatrix = function() {
-    return this._viewMatrix.clone();
+    return this._m.clone();
 };
 
 p.getProjMatrix = function() {
     return this._projMatrix.clone();
 };
 
-p._updateViewMatrix = function() {
-    this.setView(this._eye, this._target, this._up);
-};
+//p._updateLookAt = function() {
+//    var aZ = this._target.subtract(this._eye).normalize(),
+//        aX = this._up.cross(aZ).normalize(),
+//        aY = aZ.cross(aX),
+//        tx = -aX.dot(this._eye),
+//        ty = -aY.dot(this._eye),
+//        tz = -aZ.dot(this._eye);
+//    
+//    this._m.m00 = aX.x; this._m.m01 = aX.y; this._m.m02 = aX.z; this._m.m03 = tx;
+//    this._m.m10 = aY.x; this._m.m11 = aY.y; this._m.m12 = aY.z; this._m.m13 = ty;
+//    this._m.m20 = aZ.x; this._m.m21 = aZ.y; this._m.m22 = aZ.z; this._m.m23 = tz; 
+//};
 
 p._updateProjMatrix = function() {
     var ymax = Math.tan((this._fov * 0.5) * NS.Maths.D2R) * this._near,

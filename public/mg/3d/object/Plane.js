@@ -29,8 +29,6 @@ p.constructor = Plane;
 p.render = function(renderTarget, piplineMatrix) {
     this._renderTarget = renderTarget;
     
-//  piplineMatrix = piplineMatrix.multiply(this._m);
-    
     var len = this._vertices.length;
     for (var i = 0; i < len; i++) {
         var vertex = this._vertices[i],
@@ -39,17 +37,15 @@ p.render = function(renderTarget, piplineMatrix) {
         vertex.screenX = projectVector.x;
         vertex.screenY = projectVector.y;
     }
-    
-    var backFaceColor;
+
     if (this.backfaceCulling) {
-        var dx  = this._vertices[1].screenX - this._vertices[0].screenX;
-        var dy  = this._vertices[1].screenY - this._vertices[0].screenY;
-        var dx2 = this._vertices[2].screenX - this._vertices[0].screenX;
-        var dy2 = this._vertices[2].screenY - this._vertices[0].screenY;
-//        if (dx*dy2 - dy*dx2 <= 0) {
-        if (dx*dy2 - dy*dx2 > 0) {
+        var dx1 = this._vertices[1].screenX - this._vertices[0].screenX,
+            dy1 = this._vertices[1].screenY - this._vertices[0].screenY,
+            dx2 = this._vertices[2].screenX - this._vertices[0].screenX,
+            dy2 = this._vertices[2].screenY - this._vertices[0].screenY;
+
+        if (dx1*dy2 - dy1*dx2 > 0) {
             return;
-            backFaceColor = "#cccccc";
         }
     }
     
@@ -73,7 +69,7 @@ p.render = function(renderTarget, piplineMatrix) {
     
     this._drawVertexLine(0, 1, 2, 0);
 
-    this._renderTarget.fillStyle = backFaceColor || "#ff0000";
+    this._renderTarget.fillStyle = "#ff0000";
     this._renderTarget.fill();
 
     this._renderTarget.closePath();
@@ -83,7 +79,7 @@ p.render = function(renderTarget, piplineMatrix) {
     this._renderTarget.beginPath();
     this._drawVertexLine(1, 3, 2, 1);
     
-    this._renderTarget.fillStyle = backFaceColor || "#0000ff";
+    this._renderTarget.fillStyle = "#0000ff";
     this._renderTarget.fill();
     
     this._renderTarget.closePath();

@@ -14,7 +14,7 @@ window.onload = function() {
     plane.backfaceCulling = true;
     plane.position = new NS.Vector3D(0, 0, 100);
     cube.position = new NS.Vector3D(0, 0, 0);
-    camera.setView(new NS.Vector3D(0, 0, 1000), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
+    camera.lookAt(new NS.Vector3D(0, 0, 1000), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
     engine.setRenderTarget(context, width, height);
     engine.camera = camera;
     
@@ -71,10 +71,8 @@ window.onload = function() {
     }
     
     document.body.addEventListener("keydown", function(event) {
-        console.log(event.keyCode);
-        
         var isModelControl = (event.shiftKey);
-        
+
         switch(event.keyCode) {
             // translate
             case 37: // left
@@ -93,10 +91,15 @@ window.onload = function() {
                 }
                 break
             case 38: // up
+                
                 if (isModelControl) {
                     modelTranslate(0, 0, -20);
                 } else {
-                    camTranslate(0, 0, -20);
+                    if (event.altKey) {
+                        camTranslate(0, 20, 0);
+                    } else {
+                        camTranslate(0, 0, -20);
+                    }
                 }
                 break;
                 
@@ -104,7 +107,11 @@ window.onload = function() {
                 if (isModelControl) {
                     modelTranslate(0, 0, 20);
                 } else {
-                    camTranslate(0, 0, 20);
+                    if (event.altKey) {
+                        camTranslate(0, -20, 0);
+                    } else {
+                        camTranslate(0, 0, 20);
+                    }
                 }
                 break;
             

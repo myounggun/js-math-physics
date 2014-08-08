@@ -20,7 +20,7 @@ var M3D = function() {
     this._worldMatrix = new NS.Matrix3D();
     
     this._camera = new NS.Camera3D();
-    this._camera.setView(new NS.Vector3D(1, 0, 1), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
+    this._camera.lookAt(new NS.Vector3D(1, 0, 1), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
 };
 
 var p = M3D.prototype = {
