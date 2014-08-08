@@ -15,11 +15,13 @@ window.onload = function() {
 
     //m = m.scale(2, 2, new Point(0, 0));
     
-    m = m.translate(50, 50);
+//    m = m.translate(50, 50);
 //    m = m.scale(0.5, 0.5, new Point(0, 0));
-    m = m.rotate(45 * Math.PI / 180, new Point(0, 0));
+    m = m.rotate(45 * Math.PI / 180);
     //m = m.translate(-50, -50);
     //m = m.rotate(45 * Math.PI / 180, new Point(0, 0));
+    
+    m = m.translate(50, 50);
     
     context.fillStyle = "#ff0000";
   
@@ -30,7 +32,7 @@ window.onload = function() {
      */
     context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
     
-    context.fillRect(0, 0, 100, 100);
+    context.fillRect(0, 0, 50, 50);
     
     // div clone
     var box = document.getElementById("box");

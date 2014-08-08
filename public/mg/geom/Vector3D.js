@@ -6,23 +6,26 @@
  * | x |
  * | y |
  * | z |
- * | w |
+ * | 0 |
  */
-!window.m3d && (window.m3d = {});
-!window.m3d.geom && (window.m3d.geom = {});
+!window.mg && (window.mg = {});
 
 (function() {
-var NS = m3d.geom;
+    "use strict";
 
-NS.Vector3D = function(x, y, z, w) {
+var NS = mg;
+
+/**
+ * @constructor
+ */
+var Vector3D = function(x, y, z, w) {
     this.x = x || 0;
     this.y = y || 0;
     this.z = z || 0;
-    this.w = w || 1;
-}
+    this.w = w || 0;
+};
 
-var s = NS.Vector3D;
-var p = NS.Vector3D.prototype = {
+var p = Vector3D.prototype = {
     get length() {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     },
@@ -32,18 +35,18 @@ var p = NS.Vector3D.prototype = {
     }
 };
 
-p.constructor = NS.Vector3D;
+p.constructor = Vector3D;
 
 p.add = function(b) {
-    return new NS.Vector3D(this.x + b.x, this.y + b.y, this.z + b.z);
+    return new Vector3D(this.x + b.x, this.y + b.y, this.z + b.z);
 };
 
 p.subtract = function(b) {
-    return new NS.Vector3D(this.x - b.x, this.y - b.y, this.z - b.z);
+    return new Vector3D(this.x - b.x, this.y - b.y, this.z - b.z);
 };
 
 p.multiply = function(s) {
-    return new NS.Vector3D(this.x * s, this.y * s, this.z * s);
+    return new Vector3D(this.x * s, this.y * s, this.z * s);
 };
 
 p.normalize = function() {
@@ -59,9 +62,9 @@ p.dot = function(b) {
 };
 
 p.cross = function(b) {
-    return new NS.Vector3D(this.y * b.z - b.y * this.z,
-                           this.z * b.x - b.z * this.x,
-                           this.x * b.y - b.x * this.y);
+    return new Vector3D(this.y * b.z - b.y * this.z,
+                        this.z * b.x - b.z * this.x,
+                        this.x * b.y - b.x * this.y);
 };
 
 p.project = function() {
@@ -72,14 +75,14 @@ p.project = function() {
 };
 
 p.clone = function() {
-    return new NS.Vector3D(this.x, this.y, this.z, this.w);
+    return new Vector3D(this.x, this.y, this.z, this.w);
 };
 
 p.toString = function() {
     return "Vector3D(" + this.x + "," + this.y + "," + this.z + "," + this.w + ")";
 };
 
-s.lookAt = function(eye, target, up) {
+Vector3D.lookAt = function(eye, target, up) {
     var aZ = target.subtract(eye).normalize(),
         aX = up.cross(aZ).normalize(),
         aY = aZ.cross(aX),
@@ -91,7 +94,9 @@ s.lookAt = function(eye, target, up) {
               aZ.x, aZ.y, aZ.z, tz,
                  0,    0,    0,  1 ]; //  R^T + eye
 
-    return new m3d.geom.Vector3D(m);
+    return new Vector3D(m);
 };
+
+NS.Vector3D = Vector3D;
 
 })();
