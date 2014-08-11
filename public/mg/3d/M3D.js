@@ -78,20 +78,20 @@ p.render = function(obj) {
     }
 
     var modelMatrix = obj.getMatrix();
-    var viewMatrix = this.camera.getViewMatrix();
-    var projMatrix = this.camera.getProjMatrix();
-    var screenMatrix = this.getScreenMatrix();
+    var viewingMatrix = this.camera.getViewMatrix();
+    var projectionMatrix = this.camera.getProjMatrix();
+    var viewportMatrix = this.getViewportMatrix();
 
     var piplineMatrix; // M * V * P * S
     piplineMatrix = modelMatrix.multiply(this._worldMatrix);
-    piplineMatrix = viewMatrix.multiply(piplineMatrix);
-    piplineMatrix = projMatrix.multiply(piplineMatrix);
-    piplineMatrix = screenMatrix.multiply(piplineMatrix);
+    piplineMatrix = viewingMatrix.multiply(piplineMatrix);
+    piplineMatrix = projectionMatrix.multiply(piplineMatrix);
+    piplineMatrix = viewportMatrix.multiply(piplineMatrix);
     
     obj.render(this._renderTarget, piplineMatrix); 
 };
 
-p.getScreenMatrix = function() {
+p.getViewportMatrix = function() {
     var hW = this.clipRect.width / 2,
         hH = this.clipRect.height / 2,
         m = [ hW,   0,  0, hW,
