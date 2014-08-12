@@ -90,6 +90,15 @@ p.multiply = function(m) {
     return new Matrix3D(m);
 };
 
+p.multiplyScalar = function(s) {
+    var m = [ this.m00*s, this.m01*s, this.m02*s, this.m03*s,
+              this.m10*s, this.m11*s, this.m12*s, this.m13*s,
+              this.m20*s, this.m21*s, this.m22*s, this.m23*s,
+              this.m30*s, this.m31*s, this.m32*s, this.m33*s ];
+
+    return new Matrix3D(m);
+};
+
 p.identity = function() {
     var m = [ 1, 0, 0, 0,
               0, 1, 0, 0,
@@ -97,6 +106,50 @@ p.identity = function() {
               0, 0, 0, 1 ];
 
     return new Matrix3D(m);
+};
+
+// http://www.euclideanspace.com/maths/algebra/matrix/functions/determinant/fourD/index.htm
+p.determinant = function() {
+    var det = this.m03*this.m12*this.m21*this.m30 - this.m02*this.m13*this.m21*this.m30 - this.m03*this.m11*this.m22*this.m30 + this.m01*this.m13*this.m22*this.m30+
+              this.m02*this.m11*this.m23*this.m30 - this.m01*this.m12*this.m23*this.m30 - this.m03*this.m12*this.m20*this.m31 + this.m02*this.m13*this.m20*this.m31+
+              this.m03*this.m10*this.m22*this.m31 - this.m00*this.m13*this.m22*this.m31 - this.m02*this.m10*this.m23*this.m31 + this.m00*this.m12*this.m23*this.m31+
+              this.m03*this.m11*this.m20*this.m32 - this.m01*this.m13*this.m20*this.m32 - this.m03*this.m10*this.m21*this.m32 + this.m00*this.m13*this.m21*this.m32+
+              this.m01*this.m10*this.m23*this.m32 - this.m00*this.m11*this.m23*this.m32 - this.m02*this.m11*this.m20*this.m33 + this.m01*this.m12*this.m20*this.m33+
+              this.m02*this.m10*this.m21*this.m33 - this.m00*this.m12*this.m21*this.m33 - this.m01*this.m10*this.m22*this.m33 + this.m00*this.m11*this.m22*this.m33;
+    
+    return det;
+};
+
+// http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+p.invert = function() {
+    var det = this.determinant();
+    if (det === 0) {
+      throw new Error('determinant is 0');
+    }
+
+    var m00 = this.m12*this.m23*this.m31 - this.m13*this.m22*this.m31 + this.m13*this.m21*this.m32 - this.m11*this.m23*this.m32 - this.m12*this.m21*this.m33 + this.m11*this.m22*this.m33,
+        m01 = this.m03*this.m22*this.m31 - this.m02*this.m23*this.m31 - this.m03*this.m21*this.m32 + this.m01*this.m23*this.m32 + this.m02*this.m21*this.m33 - this.m01*this.m22*this.m33,
+        m02 = this.m02*this.m13*this.m31 - this.m03*this.m12*this.m31 + this.m03*this.m11*this.m32 - this.m01*this.m13*this.m32 - this.m02*this.m11*this.m33 + this.m01*this.m12*this.m33,
+        m03 = this.m03*this.m12*this.m21 - this.m02*this.m13*this.m21 - this.m03*this.m11*this.m22 + this.m01*this.m13*this.m22 + this.m02*this.m11*this.m23 - this.m01*this.m12*this.m23,
+        m10 = this.m13*this.m22*this.m30 - this.m12*this.m23*this.m30 - this.m13*this.m20*this.m32 + this.m10*this.m23*this.m32 + this.m12*this.m20*this.m33 - this.m10*this.m22*this.m33,
+        m11 = this.m02*this.m23*this.m30 - this.m03*this.m22*this.m30 + this.m03*this.m20*this.m32 - this.m00*this.m23*this.m32 - this.m02*this.m20*this.m33 + this.m00*this.m22*this.m33,
+        m12 = this.m03*this.m12*this.m30 - this.m02*this.m13*this.m30 - this.m03*this.m10*this.m32 + this.m00*this.m13*this.m32 + this.m02*this.m10*this.m33 - this.m00*this.m12*this.m33,
+        m13 = this.m02*this.m13*this.m20 - this.m03*this.m12*this.m20 + this.m03*this.m10*this.m22 - this.m00*this.m13*this.m22 - this.m02*this.m10*this.m23 + this.m00*this.m12*this.m23,
+        m20 = this.m11*this.m23*this.m30 - this.m13*this.m21*this.m30 + this.m13*this.m20*this.m31 - this.m10*this.m23*this.m31 - this.m11*this.m20*this.m33 + this.m10*this.m21*this.m33,
+        m21 = this.m03*this.m21*this.m30 - this.m01*this.m23*this.m30 - this.m03*this.m20*this.m31 + this.m00*this.m23*this.m31 + this.m01*this.m20*this.m33 - this.m00*this.m21*this.m33,
+        m22 = this.m01*this.m13*this.m30 - this.m03*this.m11*this.m30 + this.m03*this.m10*this.m31 - this.m00*this.m13*this.m31 - this.m01*this.m10*this.m33 + this.m00*this.m11*this.m33,
+        m23 = this.m03*this.m11*this.m20 - this.m01*this.m13*this.m20 - this.m03*this.m10*this.m21 + this.m00*this.m13*this.m21 + this.m01*this.m10*this.m23 - this.m00*this.m11*this.m23,
+        m30 = this.m12*this.m21*this.m30 - this.m11*this.m22*this.m30 - this.m12*this.m20*this.m31 + this.m10*this.m22*this.m31 + this.m11*this.m20*this.m32 - this.m10*this.m21*this.m32,
+        m31 = this.m01*this.m22*this.m30 - this.m02*this.m21*this.m30 + this.m02*this.m20*this.m31 - this.m00*this.m22*this.m31 - this.m01*this.m20*this.m32 + this.m00*this.m21*this.m32,
+        m32 = this.m02*this.m11*this.m30 - this.m01*this.m12*this.m30 - this.m02*this.m10*this.m31 + this.m00*this.m12*this.m31 + this.m01*this.m10*this.m32 - this.m00*this.m11*this.m32,
+        m33 = this.m01*this.m12*this.m20 - this.m02*this.m11*this.m20 + this.m02*this.m10*this.m21 - this.m00*this.m12*this.m21 - this.m01*this.m10*this.m22 + this.m00*this.m11*this.m22,
+        m = [ m00, m01, m02, m03,
+              m10, m11, m12, m13,
+              m20, m21, m22, m23,
+              m30, m31, m32, m33 ];
+            
+    var im = new Matrix3D(m);
+    return im.multiplyScalar(1 / det);
 };
 
 /**
