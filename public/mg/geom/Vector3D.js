@@ -82,21 +82,6 @@ p.toString = function() {
     return "Vector3D(" + this.x + "," + this.y + "," + this.z + "," + this.w + ")";
 };
 
-Vector3D.lookAt = function(eye, target, up) {
-    var aZ = target.subtract(eye).normalize(),
-        aX = up.cross(aZ).normalize(),
-        aY = aZ.cross(aX),
-        tx = -aX.dot(eye),
-        ty = -aY.dot(eye),
-        tz = -aZ.dot(eye),
-        m = [ aX.x, aX.y, aX.z, tx,
-              aY.x, aY.y, aY.z, ty,
-              aZ.x, aZ.y, aZ.z, tz,
-                 0,    0,    0,  1 ]; //  R^T + eye
-
-    return new Vector3D(m);
-};
-
 NS.Vector3D = Vector3D;
 
 })();

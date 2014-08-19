@@ -30,28 +30,24 @@ var Matrix3D = function(m) {
               0, 0, 0, 1 ];
     }
     
-    this.m00 = m[0];
-    this.m01 = m[1];
-    this.m02 = m[2];
-    this.m03 = m[3];
-
-    this.m10 = m[4];
-    this.m11 = m[5];
-    this.m12 = m[6];
-    this.m13 = m[7];
-
-    this.m20 = m[8];
-    this.m21 = m[9];
-    this.m22 = m[10];
-    this.m23 = m[11];
-
-    this.m30 = m[12];
-    this.m31 = m[13];
-    this.m32 = m[14];
-    this.m33 = m[15];
+    this.m00 = m[0];  this.m01 = m[1];  this.m02 = m[2];  this.m03 = m[3];
+    this.m10 = m[4];  this.m11 = m[5];  this.m12 = m[6];  this.m13 = m[7];
+    this.m20 = m[8];  this.m21 = m[9];  this.m22 = m[10]; this.m23 = m[11];
+    this.m30 = m[12]; this.m31 = m[13]; this.m32 = m[14]; this.m33 = m[15];
 };
 
-var p = Matrix3D.prototype;
+var p = Matrix3D.prototype = {
+    get determinant() {
+        var det = this.m03*this.m12*this.m21*this.m30 - this.m02*this.m13*this.m21*this.m30 - this.m03*this.m11*this.m22*this.m30 + this.m01*this.m13*this.m22*this.m30+
+                  this.m02*this.m11*this.m23*this.m30 - this.m01*this.m12*this.m23*this.m30 - this.m03*this.m12*this.m20*this.m31 + this.m02*this.m13*this.m20*this.m31+
+                  this.m03*this.m10*this.m22*this.m31 - this.m00*this.m13*this.m22*this.m31 - this.m02*this.m10*this.m23*this.m31 + this.m00*this.m12*this.m23*this.m31+
+                  this.m03*this.m11*this.m20*this.m32 - this.m01*this.m13*this.m20*this.m32 - this.m03*this.m10*this.m21*this.m32 + this.m00*this.m13*this.m21*this.m32+
+                  this.m01*this.m10*this.m23*this.m32 - this.m00*this.m11*this.m23*this.m32 - this.m02*this.m11*this.m20*this.m33 + this.m01*this.m12*this.m20*this.m33+
+                  this.m02*this.m10*this.m21*this.m33 - this.m00*this.m12*this.m21*this.m33 - this.m01*this.m10*this.m22*this.m33 + this.m00*this.m11*this.m22*this.m33;
+
+        return det;
+    }
+};
 
 p.constructor = Matrix3D;
 
@@ -108,21 +104,8 @@ p.identity = function() {
     return new Matrix3D(m);
 };
 
-// http://www.euclideanspace.com/maths/algebra/matrix/functions/determinant/fourD/index.htm
-p.determinant = function() {
-    var det = this.m03*this.m12*this.m21*this.m30 - this.m02*this.m13*this.m21*this.m30 - this.m03*this.m11*this.m22*this.m30 + this.m01*this.m13*this.m22*this.m30+
-              this.m02*this.m11*this.m23*this.m30 - this.m01*this.m12*this.m23*this.m30 - this.m03*this.m12*this.m20*this.m31 + this.m02*this.m13*this.m20*this.m31+
-              this.m03*this.m10*this.m22*this.m31 - this.m00*this.m13*this.m22*this.m31 - this.m02*this.m10*this.m23*this.m31 + this.m00*this.m12*this.m23*this.m31+
-              this.m03*this.m11*this.m20*this.m32 - this.m01*this.m13*this.m20*this.m32 - this.m03*this.m10*this.m21*this.m32 + this.m00*this.m13*this.m21*this.m32+
-              this.m01*this.m10*this.m23*this.m32 - this.m00*this.m11*this.m23*this.m32 - this.m02*this.m11*this.m20*this.m33 + this.m01*this.m12*this.m20*this.m33+
-              this.m02*this.m10*this.m21*this.m33 - this.m00*this.m12*this.m21*this.m33 - this.m01*this.m10*this.m22*this.m33 + this.m00*this.m11*this.m22*this.m33;
-    
-    return det;
-};
-
-// http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
-p.invert = function() {
-    var det = this.determinant();
+p.inverse = function() {
+    var det = this.determinant;
     if (det === 0) {
       throw new Error('determinant is 0');
     }
@@ -260,24 +243,24 @@ p.clone = function() {
 };
 
 p.toString = function() {
-    return "" + //"matrix3d(" + 
+    return "matrix3d(" + 
             this.m00 + "," + this.m01 + "," + this.m02 + "," + this.m03 + "\n" +
             this.m10 + "," + this.m11 + "," + this.m12 + "," + this.m13 + "\n" +
             this.m20 + "," + this.m21 + "," + this.m22 + "," + this.m23 + "\n" +
-            this.m30 + "," + this.m31 + "," + this.m32 + "," + this.m33;// + ")";
+            this.m30 + "," + this.m31 + "," + this.m32 + "," + this.m33 + ")";
 };
 
 Matrix3D.lookAt = function(eye, target, up) {
-    var aZ = target.subtract(eye).normalize(),
+    var aZ = eye.subtract(target).normalize(),
         aX = up.cross(aZ).normalize(),
         aY = aZ.cross(aX),
-        tx = -aX.dot(eye),
-        ty = -aY.dot(eye),
-        tz = -aZ.dot(eye),
-        m = [ aX.x, aX.y, aX.z, tx,
-              aY.x, aY.y, aY.z, ty,
-              aZ.x, aZ.y, aZ.z, tz,
-                 0,    0,    0,  1 ]; //  R^T + eye
+        tX = aX.dot(eye),
+        tY = aY.dot(eye),
+        tZ = aZ.dot(eye),
+        m = [ aX.x, aX.y, aX.z, -tX,
+              aY.x, aY.y, aY.z, -tY,
+              aZ.x, aZ.y, aZ.z, -tZ,
+                 0,    0,    0,   1 ]; //  R^T + eye
 
     return new Matrix3D(m);
 };

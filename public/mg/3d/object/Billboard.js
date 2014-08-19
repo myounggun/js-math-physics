@@ -1,7 +1,7 @@
 /**
  * Mental Graphics by myounggun@gmail.com
  * 
- * Plane.js 
+ * Billboard.js 
  */
 !window.mg && (window.mg = {});
 
@@ -13,18 +13,17 @@ var NS = mg;
 /**
  * @constructor
  */
-var Plane = function(width, height, backfaceCulling) {
+var Billboard = function(width, height) {
     NS.Object3D.call(this);
     
-    this.backfaceCulling = backfaceCulling;
     this.color = null;
 
     this._setVertices(width / 2, height / 2);
 };
 
-var p = Plane.prototype = new NS.Object3D();
+var p = Billboard.prototype = new NS.Object3D();
 
-p.constructor = Plane;
+p.constructor = Billboard;
 
 /** override */
 p.render = function(renderTarget, piplineMatrix) {
@@ -39,50 +38,13 @@ p.render = function(renderTarget, piplineMatrix) {
         vertex.screenY = projectVector.y;
     }
     
-    if (this.backfaceCulling) {
-        var v0 = this._vertices[0],
-            v1 = this._vertices[1],
-            v2 = this._vertices[2],
-            dx1 = v1.screenX - v0.screenX,
-            dy1 = v1.screenY - v0.screenY,
-            dx2 = v2.screenX - v0.screenX,
-            dy2 = v2.screenY - v0.screenY,
-            fronted = (dx1 * dy2 - dy1 * dx2 >= 0);
-
-        if (!fronted) {
-            return;
-        }
-    }
-    
     // wireframe
-//    this._renderTarget.save();
-//    this._renderTarget.beginPath();
-//
-//    this._drawVertexLine(0, 1, 2, 0);
-//    this._drawVertexLine(1, 3, 2, 1);
-//
-//    this._renderTarget.strokeStyle = "#000000";
-//    this._renderTarget.stroke();
-//    
-//    this._renderTarget.closePath();
-//    this._renderTarget.restore();
-    
     this._renderTarget.save();
     this._renderTarget.beginPath();
     
-    this._drawVertexLine(0, 2, 1, 0);
-
-    this._renderTarget.fillStyle = this.color || "#ff0000";
-    this._renderTarget.fill();
-
-    this._renderTarget.closePath();
-    this._renderTarget.restore();
-
-    this._renderTarget.save();
-    this._renderTarget.beginPath();
-    this._drawVertexLine(0, 3, 2, 0);
+    this._drawVertexLine(0, 1, 2, 3, 0);
     
-    this._renderTarget.fillStyle = this.color || "#0000ff";
+    this._renderTarget.fillStyle = this.color || "#000000";
     this._renderTarget.fill();
     
     this._renderTarget.closePath();
@@ -109,6 +71,6 @@ p._drawVertexLine = function() {
     }
 }
 
-NS.Plane = Plane;
+NS.Billboard = Billboard;
 
 })();

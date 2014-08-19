@@ -26,25 +26,10 @@ NS.Matrix3D = function(m) {
               0, 0, 0, 1 ];
     }
     
-    this.m00 = m[0];
-    this.m01 = m[1];
-    this.m02 = m[2];
-    this.m03 = m[3];
-
-    this.m10 = m[4];
-    this.m11 = m[5];
-    this.m12 = m[6];
-    this.m13 = m[7];
-
-    this.m20 = m[8];
-    this.m21 = m[9];
-    this.m22 = m[10];
-    this.m23 = m[11];
-
-    this.m30 = m[12];
-    this.m31 = m[13];
-    this.m32 = m[14];
-    this.m33 = m[15];
+    this.m00 = m[0];  this.m01 = m[1];  this.m02 = m[2];  this.m03 = m[3];
+    this.m10 = m[4];  this.m11 = m[5];  this.m12 = m[6];  this.m13 = m[7];
+    this.m20 = m[8];  this.m21 = m[9];  this.m22 = m[10]; this.m23 = m[11];
+    this.m30 = m[12]; this.m31 = m[13]; this.m32 = m[14]; this.m33 = m[15];
 }
 
 NS.Matrix3D.prototype = {

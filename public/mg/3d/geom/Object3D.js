@@ -47,6 +47,10 @@ p.getMatrix = function() {
     return this._m;
 };
 
+p.setMatrix = function(m) {
+    this._m = m;
+};
+
 p.translate = function(x, y, z) {
     this._m = this._m.translate(x, y, z);
 };
@@ -60,7 +64,7 @@ p.rotateY = function(rad) {
 };
 
 // override
-//p.render = function(obj) {
+//p.render = function(renderTarget, piplineMatrix) {
 //    // impl
 //};
 

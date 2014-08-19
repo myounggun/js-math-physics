@@ -1,6 +1,8 @@
 /**
  * Mental Graphics by myounggun@gmail.com
  * 
+ * @author Keith Peters (bit101)
+ * 
  * Maths.js
  */
 !window.mg && (window.mg = {});
@@ -10,7 +12,10 @@
 
 var NS = mg;
 
-NS.Maths = {
+var Maths = function() {
+};
+
+Maths = {
     D2R: 0.0174532925199, // degrees / 180 * Math.PI
     R2D: 57.2957795131,   // radians * 180 / Math.PI
     
@@ -107,6 +112,8 @@ NS.Maths = {
                Maths.rangeIntersect(r0.y, r0.y + r0.height, r1.y, r1.y + r1.height);
     }
 };
+
+NS.Maths = Maths;
 
 })();
 

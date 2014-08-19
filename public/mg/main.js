@@ -8,13 +8,17 @@ window.onload = function() {
         changed = true,
         camera = new NS.Camera3D(30, width / height, 50, 10000),
         engine = NS.M3D.getInstance(),
-        plane = new NS.Plane(200, 200);
+        plane = new NS.Plane(200, 200),
         cube = new NS.Cube(100);
     
     plane.backfaceCulling = true;
     plane.position = new NS.Vector3D(0, 0, 100);
     cube.position = new NS.Vector3D(0, 0, 0);
-    camera.lookAt(new NS.Vector3D(0, 0, 1000), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
+    
+    camera.position.x = 250;
+    camera.position.y = 250;
+    camera.position.z = 1000;
+    camera.lookAt(new NS.Vector3D(0, 0, 0));
     engine.setRenderTarget(context, width, height);
     engine.camera = camera;
     

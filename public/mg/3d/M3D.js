@@ -77,21 +77,41 @@ p.render = function(obj) {
         throw new Error("renderTarget is null");
     }
 
+    if (obj instanceof NS.Billboard) {
+        this._setBillboard(obj);
+    }
+
     var modelMatrix = obj.getMatrix();
-    var viewingMatrix = this.camera.getViewMatrix();
-    var projectionMatrix = this.camera.getProjMatrix();
-    var viewportMatrix = this.getViewportMatrix();
+    var viewMatrix = this.camera.getViewMatrix();
+    var projMatrix = this.camera.getProjMatrix();
+    var screenMatrix = this.getScreenMatrix();
 
     var piplineMatrix; // M * V * P * S
     piplineMatrix = modelMatrix.multiply(this._worldMatrix);
-    piplineMatrix = viewingMatrix.multiply(piplineMatrix);
-    piplineMatrix = projectionMatrix.multiply(piplineMatrix);
-    piplineMatrix = viewportMatrix.multiply(piplineMatrix);
+    piplineMatrix = viewMatrix.multiply(piplineMatrix);
+    piplineMatrix = projMatrix.multiply(piplineMatrix);
+    piplineMatrix = screenMatrix.multiply(piplineMatrix);
     
     obj.render(this._renderTarget, piplineMatrix); 
 };
 
-p.getViewportMatrix = function() {
+/**
+ * @param obj Object3D
+ */
+p._setBillboard = function(obj) {
+    var m = new NS.Matrix3D(),
+        im = this._camera.getInverseMatrixY();
+    
+    var m = m.multiply(im);
+
+    m.m03 = obj.x;
+    m.m13 = obj.y;
+    m.m23 = obj.z;
+    
+    obj.setMatrix(m);
+};
+
+p.getScreenMatrix = function() {
     var hW = this.clipRect.width / 2,
         hH = this.clipRect.height / 2,
         m = [ hW,   0,  0, hW,

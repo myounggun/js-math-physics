@@ -11,9 +11,6 @@
 var NS = mg;
 
 /**
- * mg.Matrix3D.lookAt(new mg.Vector3D(-1, 0, 1), new mg.Vector3D(0, 0, 0), new mg.Vector3D(0, 1, 0)).transformVector(new mg.Vector3D(0, 0, 0)); // RH
- * @param fov 0 ~ 180 사이 각도
- * 
  * @constructor
  */
 var Camera3D = function(fov, aspect, near, far) {
@@ -22,31 +19,51 @@ var Camera3D = function(fov, aspect, near, far) {
     this._near = near || 50;
     this._far = far || 10000;
     
-    this._m = new NS.Matrix3D();
-
     this._updateProjMatrix();
+    
+    this.up = new NS.Vector3D(0, 1, 0);
+    this.position = new NS.Vector3D();
+    
+    this._m = new NS.Matrix3D();
 };
 
 var p = Camera3D.prototype;
 
 p.constructor = Camera3D;
 
-p.lookAt = function(eye, target, up) {
-    this._eye = eye;
+p.lookAt = function(target) {
     this._target = target;
-    this._up = up;
     
-    this._m = NS.Matrix3D.lookAt(this._eye, this._target, this._up);
+    var aZ = this.position.subtract(target).normalize(),
+        aX = this.up.cross(aZ).normalize(),
+        aY = aZ.cross(aX),
+        tX = aX.dot(this.position),
+        tY = aY.dot(this.position),
+        tZ = aZ.dot(this.position),
+        m = [ aX.x, aX.y, aX.z, -tX,
+              aY.x, aY.y, aY.z, -tY,
+              aZ.x, aZ.y, aZ.z, -tZ,
+                 0,    0,    0,   1 ]; //  R^T + eye
+
+    this.up = aY;
+
+    this._m = new NS.Matrix3D(m);
+};
+
+p.updateLookAt = function() {
+    this.lookAt(this._target);  
 };
 
 p.translate = function(x, y, z) {
-//    this._eye.x += x;
-//    this._eye.y += y;
-//    this._eye.z += z;
-//    this._updateLookAt();
-    this._m.m03 += x;
-    this._m.m13 += y;
-    this._m.m23 += z;
+    this.position.x += x;
+    this.position.y += y;
+    this.position.z += z;
+
+    this._m.m03 -= x;
+    this._m.m13 -= y;
+    this._m.m23 -= z;
+    
+//    this.updateLookAt();
 };
 
 p.rotateX = function(rad) {
@@ -61,23 +78,24 @@ p.getViewMatrix = function() {
     return this._m.clone();
 };
 
+p.getInverseMatrixY = function() {
+    var m = new NS.Matrix3D();
+    
+    m.m00 = this._m.m00;
+    m.m02 = this._m.m02;
+    m.m20 = this._m.m20;
+    m.m22 = this._m.m22;
+    
+    return m.inverse();
+};
+
 p.getProjMatrix = function() {
     return this._projMatrix.clone();
 };
 
-//p._updateLookAt = function() {
-//    var aZ = this._target.subtract(this._eye).normalize(),
-//        aX = this._up.cross(aZ).normalize(),
-//        aY = aZ.cross(aX),
-//        tx = -aX.dot(this._eye),
-//        ty = -aY.dot(this._eye),
-//        tz = -aZ.dot(this._eye);
-//    
-//    this._m.m00 = aX.x; this._m.m01 = aX.y; this._m.m02 = aX.z; this._m.m03 = tx;
-//    this._m.m10 = aY.x; this._m.m11 = aY.y; this._m.m12 = aY.z; this._m.m13 = ty;
-//    this._m.m20 = aZ.x; this._m.m21 = aZ.y; this._m.m22 = aZ.z; this._m.m23 = tz; 
-//};
-
+/** 
+ * view volume 2x2x2 for OpenGL 
+ */
 p._updateProjMatrix = function() {
     var ymax = Math.tan((this._fov * 0.5) * NS.Maths.D2R) * this._near,
         ymin = -ymax,
