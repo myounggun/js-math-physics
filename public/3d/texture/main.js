@@ -33,29 +33,25 @@ window.onload = function() {
     function render() {
         context2.clearRect(-canvas2.width / 2, -canvas2.height / 2, canvas2.width, canvas2.height);
 
-        var i, j, t = texture;
-        var p = [];
-        for (j = 0; j < h - 1; j++)  {
-            p[j] = [];
+        var x, y,
+            t = texture,
+            p = [];
 
-            for (i = 0; i < w - 1; i++) {
-                p[j][i] = [];
-                p[j][i][0] = (i - (w - 2) * 0.5) * size / (i / z + 1);
-                p[j][i][1] = (j - (h - 2) * 0.5) * size / (i / z + 1);
+        for (y = 0; y < h - 1; y++)  {
+            p[j] = [];
+            for (x = 0; x < w - 1; x++) {
+                p[y][x] = [];
+                p[y][x][0] = (x - (w - 2) * 0.5) * size / (x / z + 1);
+                p[y][x][1] = (y - (h - 2) * 0.5) * size / (y / z + 1);
             }
         }
 
-        var x, y, k = 0;
+        var r, g, b, a, idx;
         for (y = 0; y < h - 2; y++)  {
             for (x = 0; x < w - 2; x++) {
-                // if (k > 0) return;
-                i = (y * w + x) * 4;
-                r = t[i + 0];
-                g = t[i + 1];
-                b = t[i + 2];
-                a = t[i + 3];
+                idx = (y * w + x) * 4;
+                r = t[idx + 0]; g = t[idx + 1]; b = t[idx + 2]; a = t[idx + 3];
 
-                // context.save();
                 context2.beginPath();
                 context2.moveTo(p[y][x][0], p[y][x][1]);
                 context2.lineTo(p[y][x+1][0], p[y][x+1][1]);
@@ -64,8 +60,6 @@ window.onload = function() {
                 context2.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
                 context2.fill();
                 context2.closePath();
-                // context.restore();
-                k++;
             }
         }
     }
