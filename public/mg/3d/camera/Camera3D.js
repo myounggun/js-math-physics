@@ -1,6 +1,6 @@
 /**
  * Mental Graphics by myounggun@gmail.com
- * 
+ *
  * Camera3D.js
  */
 !window.mg && (window.mg = {});
@@ -18,12 +18,12 @@ var Camera3D = function(fov, aspect, near, far) {
     this._aspect = aspect || 1;
     this._near = near || 50;
     this._far = far || 10000;
-    
+
     this._updateProjMatrix();
-    
+
     this.up = new NS.Vector3D(0, 1, 0);
     this.position = new NS.Vector3D();
-    
+
     this._m = new NS.Matrix3D();
 };
 
@@ -33,7 +33,7 @@ p.constructor = Camera3D;
 
 p.lookAt = function(target) {
     this._target = target;
-    
+
     var aZ = this.position.subtract(target).normalize(),
         aX = this.up.cross(aZ).normalize(),
         aY = aZ.cross(aX),
@@ -51,7 +51,7 @@ p.lookAt = function(target) {
 };
 
 p.updateLookAt = function() {
-    this.lookAt(this._target);  
+    this.lookAt(this._target);
 };
 
 p.translate = function(x, y, z) {
@@ -62,7 +62,7 @@ p.translate = function(x, y, z) {
     this._m.m03 -= x;
     this._m.m13 -= y;
     this._m.m23 -= z;
-    
+
 //    this.updateLookAt();
 };
 
@@ -80,12 +80,12 @@ p.getViewMatrix = function() {
 
 p.getInverseMatrixY = function() {
     var m = new NS.Matrix3D();
-    
+
     m.m00 = this._m.m00;
     m.m02 = this._m.m02;
     m.m20 = this._m.m20;
     m.m22 = this._m.m22;
-    
+
     return m.inverse();
 };
 
@@ -93,8 +93,8 @@ p.getProjMatrix = function() {
     return this._projMatrix.clone();
 };
 
-/** 
- * view volume 2x2x2 for OpenGL 
+/**
+ * view volume 2x2x2 for OpenGL
  */
 p._updateProjMatrix = function() {
     var ymax = Math.tan((this._fov * 0.5) * NS.Maths.D2R) * this._near,

@@ -1,8 +1,8 @@
 /**
  * Mental Graphics by myounggun@gmail.com
- * 
+ *
  * Simple 3d engine
- * 
+ *
  * M3D.js
  */
 !window.mg && (window.mg = {});
@@ -18,7 +18,7 @@ var NS = mg,
  */
 var M3D = function() {
     this._worldMatrix = new NS.Matrix3D();
-    
+
     this._camera = new NS.Camera3D();
     this._camera.lookAt(new NS.Vector3D(1, 0, 1), new NS.Vector3D(0, 0, 0), new NS.Vector3D(0, 1, 0));
 };
@@ -27,15 +27,15 @@ var p = M3D.prototype = {
     get camera() {
         return this._camera;
     },
-    
+
     set camera(camera) {
         this._camera = camera;
     },
-    
+
     get clipRect() {
         return this._clipRect;
     },
-    
+
     get screenCenter() {
         return {x: this._clipRect.width / 2,  y: this._clipRect.height / 2 };
     }
@@ -53,10 +53,10 @@ p.setSize = function(width, height) {
     if (!this._renderTarget) {
         throw new Error("renderTarget is null");
     }
-    
+
     this._renderTarget.width = width;
     this._renderTarget.height = height;
-    
+
     this._clipRect = {
         x: 0,
         y: 0,
@@ -68,18 +68,18 @@ p.setSize = function(width, height) {
 /**
  * @param obj Object3D
  */
-p.render = function(obj) {    
+p.render = function(obj) {
     if (!obj) {
         throw new Error("obj is null");
     }
-    
+
     if (!this._renderTarget) {
         throw new Error("renderTarget is null");
     }
 
-    if (obj instanceof NS.Billboard) {
-        this._setBillboard(obj);
-    }
+    // if (obj instanceof NS.Billboard) {
+    //     this._setBillboard(obj);
+    // }
 
     var modelMatrix = obj.getMatrix();
     var viewMatrix = this.camera.getViewMatrix();
@@ -91,8 +91,8 @@ p.render = function(obj) {
     piplineMatrix = viewMatrix.multiply(piplineMatrix);
     piplineMatrix = projMatrix.multiply(piplineMatrix);
     piplineMatrix = screenMatrix.multiply(piplineMatrix);
-    
-    obj.render(this._renderTarget, piplineMatrix); 
+
+    obj.render(this._renderTarget, piplineMatrix);
 };
 
 /**
@@ -101,13 +101,13 @@ p.render = function(obj) {
 p._setBillboard = function(obj) {
     var m = new NS.Matrix3D(),
         im = this._camera.getInverseMatrixY();
-    
+
     var m = m.multiply(im);
 
     m.m03 = obj.x;
     m.m13 = obj.y;
     m.m23 = obj.z;
-    
+
     obj.setMatrix(m);
 };
 
@@ -118,14 +118,14 @@ p.getScreenMatrix = function() {
                0, -hH,  0, hH,
                0,   0,  1,  0,
                0,   0,  0,  1 ];
-    
+
     return new NS.Matrix3D(m);
 };
 
 p.clear = function() {
     this._renderTarget.clearRect(0, 0, this.clipRect.width, this.clipRect.height);
-    
-    // 스크린 공간을 가늠하기 위한 코드 
+
+    // 스크린 공간을 가늠하기 위한 코드
     this._renderTarget.fillStyle = "rgba(0, 0, 0, 0.1)";
     this._renderTarget.fillRect(this.clipRect.x, this.clipRect.y, this.clipRect.width, this.clipRect.height);
 };
@@ -141,7 +141,7 @@ M3D.getInstance = function() {
     if (INSTANCE === null) {
         INSTANCE = new NS.M3D();
     }
-    
+
     return INSTANCE;
 };
 

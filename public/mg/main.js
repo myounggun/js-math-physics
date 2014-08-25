@@ -9,71 +9,82 @@ window.onload = function() {
         camera = new NS.Camera3D(30, width / height, 50, 10000),
         engine = NS.M3D.getInstance(),
         plane = new NS.Plane(200, 200),
-        cube = new NS.Cube(100);
-    
+        billboard = new NS.Billboard(200, 200),
+        cube = new NS.Cube(100),
+        planeMesh3D = NS.Mesh3D.createPlane(-100,100,0, 100,-100,0, 10,10, 0,0,1,1, true);
+
+
     plane.backfaceCulling = true;
     plane.position = new NS.Vector3D(0, 0, 100);
+
+    planeMesh3D.position = new NS.Vector3D(0, 0, 100);
+    planeMesh3D.setMaterial(new NS.BitmapMaterial('images/image.jpg'));
+
+    billboard.position = new NS.Vector3D(0, 0, 100);
+
     cube.position = new NS.Vector3D(0, 0, 0);
-    
+
     camera.position.x = 250;
     camera.position.y = 250;
     camera.position.z = 1000;
     camera.lookAt(new NS.Vector3D(0, 0, 0));
     engine.setRenderTarget(context, width, height);
     engine.camera = camera;
-    
+
     update();
 
     function update() {
         if (changed) {
-            
+
             engine.clear();
             drawXYAxis();
 
             engine.render(cube);
-            engine.render(plane);
+            // engine.render(plane);
+            // engine.render(billboard);
+            engine.render(planeMesh3D);
 
             changed = false;
         }
-        
+
         requestAnimationFrame(update);
     }
-    
+
     // camera
     function camTranslate(x, y, z) {
         camera.translate(x, y, z);
         changed = true;
     }
-    
+
     function camRotateX(angle) {
         camera.rotateX(angle);
         changed = true;
     }
-    
+
     function camRotateY(angle) {
         camera.rotateY(angle);
         changed = true;
     }
-    
+
     // plane
     function modelTranslate(x, y, z) {
         plane.translate(x, y, z);
         cube.translate(x, y, z);
         changed = true;
     }
-    
+
     function modelRotateX(angle) {
         plane.rotateX(angle);
         cube.rotateX(angle);
         changed = true;
     }
-    
+
     function modelRotateY(angle) {
         plane.rotateY(angle);
         cube.rotateY(angle);
         changed = true;
     }
-    
+
     document.body.addEventListener("keydown", function(event) {
         var isModelControl = (event.shiftKey);
 
@@ -85,7 +96,7 @@ window.onload = function() {
                 } else {
                     camTranslate(-20, 0, 0);
                 }
-                
+
                 break;
             case 39: // right
                 if (isModelControl) {
@@ -95,7 +106,7 @@ window.onload = function() {
                 }
                 break
             case 38: // up
-                
+
                 if (isModelControl) {
                     modelTranslate(0, 0, -20);
                 } else {
@@ -106,7 +117,7 @@ window.onload = function() {
                     }
                 }
                 break;
-                
+
             case 40: // down
                 if (isModelControl) {
                     modelTranslate(0, 0, 20);
@@ -118,7 +129,7 @@ window.onload = function() {
                     }
                 }
                 break;
-            
+
             // rotate
             case 65: // A : left
                 if (isModelControl) {
@@ -150,16 +161,16 @@ window.onload = function() {
                 break;
         }
     });
-    
+
     function drawXYAxis() {
         var c = engine.screenCenter;
         drawLine({x: c.x - width, y: c.y}, {x: c.x + width, y: c.y}, "#999999");
         drawLine({x: c.x, y: c.y - height}, {x: c.x, y: c.y + height}, "#999999");
     }
-    
+
     function drawLine(p1, p2, color) {
         context.beginPath();
-        context.moveTo(p1.x, p1.y);    
+        context.moveTo(p1.x, p1.y);
         context.lineTo(p2.x, p2.y);
         context.strokeStyle = color;
         context.stroke();

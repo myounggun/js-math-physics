@@ -1,8 +1,8 @@
 /**
  * Mental Graphics by myounggun@gmail.com
- * 
+ *
  * Matrix2D.js (Affine Transform)
- * 
+ *
  * | a  c tx |
  * | b  d ty |
  * | 0  0  1 |
@@ -42,12 +42,23 @@ p.multiply = function(m) {
         d = this.b * m.c + this.d * m.d,
         tx = this.a * m.tx + this.c * m.ty + this.tx,
         ty = this.b * m.tx + this.d * m.ty + this.ty;
-    
+
     return new Matrix2D(a, b, c, d, tx, ty);
 };
 
 p.identity = function() {
     return new Matrix2D(1, 0, 0, 1, 0, 0);
+};
+
+p.inverse = function() {
+    var det = this.a * this.d - this.b * this.c;
+    return new NS.Matrix2D(
+         this.d / det,
+        -this.b / det,
+        -this.c / det,
+         this.a / det,
+        (this.c * this.ty - this.d * this.tx) / det,
+        (this.b * this.tx - this.a * this.ty) / det);
 };
 
 p.translate = function(tx, ty) {
@@ -61,7 +72,7 @@ p.scale = function(sx, sy) {
 p.rotate = function(angle) {
     var cosA = Math.cos(angle),
         sinA = Math.sin(angle);
-    
+
     return this.multiply(new Matrix2D(cosA, sinA, -sinA, cosA, 0, 0));
 };
 
@@ -86,7 +97,11 @@ p.clone = function() {
 };
 
 p.toString = function() {
-    return "matrix(" + this.a + "," + this.b + "," + this.c + "," + this.d + "," + this.tx + "," + this.ty + ")";
+    // return "matrix(" + this.a + "," + this.b + "," + this.c + "," + this.d + "," + this.tx + "," + this.ty + ")";
+
+    // return "matrix(" +
+    return this.a + "," + this.c + "," + this.tx + "\n" +
+           this.b + "," + this.d + "," + this.ty; //+ ")";
 };
 
 NS.Matrix2D = Matrix2D;
