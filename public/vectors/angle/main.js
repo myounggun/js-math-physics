@@ -5,7 +5,7 @@ window.onload = function() {
         height = canvas.height = window.innerHeight,
         p1 = {x: 0, y: 0},
         p2 = {x: 100, y: 0},
-        R2D = 57.2957795131
+        R2D = 57.2957795131;
 
     update();
 
@@ -20,8 +20,8 @@ window.onload = function() {
         drawCircle(p2, 10, "rgba(80, 80, 80, 1)");
         drawLine(p1, p2, "#999999");
 
-        var dgree = theta(p1, p2) * R2D;
-        console.log(Math.floor(dgree));
+        var degree = theta(p1, p2) * R2D;
+        console.log(Math.floor(degree));
 
         context.restore();
 
